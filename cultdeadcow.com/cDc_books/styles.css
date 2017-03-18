@@ -1,0 +1,48 @@
+body
+{ background-color: #e0e0e0;
+  font-family:arial, "lucida console", sans-serif }
+A
+{ text-decoration:none }
+a:link, a:visited
+{ COLOR: #990000 }
+a:active, a:hover
+{ COLOR: #F80000 }
+#banner
+{ font-size:xx-large;    
+  font-weight:bold;
+  color:#990000;
+  text-align:center }
+.description
+{ font-size:x-large;    
+  font-weight:bold;
+  color:#990000;
+  text-align:center }
+#container
+{ position:absolute;
+  OVERFLOW: hidden;
+  text-align:left;
+  width:60%;
+  left:24% }
+#left
+{ position:absolute;
+  color:#000000;
+  font-size:small;
+  width:20%;
+  border:#990000 1px solid;
+  padding:10px }
+#left .copyright
+{ font-size:x-small }
+#center
+{ left:22%;
+  color:#181818;
+  font-size:small;
+  text-align:left;
+  padding:15px }
+#centertitle
+{ left:22%;
+  color:#181818;
+  width:94%;
+  font-size:large;
+  text-align:left;
+  padding:15px;
+  border:#333333 1px dashed }

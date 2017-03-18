@@ -1,0 +1,70 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Non-rectangular Window Regions</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR></HEAD>
+<BODY text=#ffffff vLink=#cc0000 aLink=#ff0000 link=#ff0000 
+bgColor=#000000>
+
+<BR><BR>
+<P>The windows most of us are used to are always rectangular. It's only very 
+recently that we have started to see applications using non-rectangular window 
+regions, but so far mostly just MP3 players. When I wrote the Back Orifice GUI 
+client, I wanted to make a window that was more than just a rectangle, but I 
+cheated. The actual window itself was in fact always rectangular, but there was 
+a graphic of a warrior choking a goat hanging off the upper left of the window. 
+I did this by opening the device context of the desktop, painting the graphics 
+next to wherever the window is moved to, and any time the window is moved away I 
+told the desktop to redraw the portion of the screen that had just been covered 
+by the graphic. </P>
+<P>While this method works okay, the graphic is not actually part of the window 
+and in addition to the fact that if you try and click on the graphic, the click 
+will actually land on the window behind the graphic. Also, if the window below 
+the graphic redraws itself, it will affect the graphic above it. It turns out 
+that a window does not have to be at all rectangular, in fact in can be any 
+(with limits) bitwise combination of ellipses, polygons and rounded rectangles, 
+and by bitwise combination, I mean that you can AND, OR, XOR and NOT regions. 
+The windows region actually defines the parts of the window that can be painted 
+to or receive user input like mouse movments and clicks. </P>
+<P>The window region APIs for getting and setting the region of a window are 
+GetWindowRgn and SetWindowRgn. The APIs for creating the regions of the 
+different shapes 
+are:<BR>CreateEllipticRgn<BR>CreatePolygonRgn<BR>CreatePolyPolygonRgn<BR>CreateRectRgn<BR>CreateRoundRectRgn<BR>You 
+can create complex regions by adding and subtracting these shapes from a region 
+using CombineRgn. One of the things that threw me for a while, and I might still 
+be missing something is that when you use CombineRgn, the target region must 
+already exist, and it's contents will just be replaced. I guess what threw me is 
+that there's no API to create an empty region, but for the first time you call 
+CombineRgn just create a simple rectangular region to pass. </P>
+<P>It is very important to remember to delete regions or you will quickly run 
+out of resources, but once you have passed a window region to SetWindowRgn do 
+not try to close it. That region is now owned by the system, and I assume is 
+closed when a different window region is set. </P>
+<P>Another interesting tidbit is that in some environments (95, NT 3.51 and NT 
+4) an application can modify the regions of windows owned by _other_ processes. 
+This does not seem to work in Win98, and it seems to me that it shouldn't work 
+at all, but it does. I have written programs that poke holes in the regions of 
+all the windows on the desktop, but the problem is there there would be a lot of 
+overhead to monitor all the windows to create a new region if their size 
+changes. It would not be impossible, but your application would have to continue 
+running and monitor the window messages for the whole system. However, you can 
+change the region for another applications window, exit, and until something 
+defines a new region for that window, it will remain altered. </P>
+<H3>The programs</H3>
+<P>Here is a program which creates a cow shaped window. You can drag this window 
+with the right button and you can close it by double clicking on it. You can 
+also size it with the little box in the lower right. Note that this is a 6.5k 
+executable, with a 1k icon. See my page on <A 
+href="../cDc_files/cDc-0398.php">creating small 
+executables</A> for more on compilling and linking this executable.<BR><A 
+href="wndrgn/cowwnd.c">cowwnd.c</A> - source code<BR><A 
+href="wndrgn/cowwnd.exe">cowwnd.exe</A> - compiled 
+executable<BR></P>
+<P>Here is a program which cuts a cow shaped hole out of every window on the 
+system, waits 7 seconds, then fixes it. Note that it will NOT work on Windows 98 
+and that if there are any windows which use their own window regions that those 
+regions will be messed up.<BR><A 
+href="wndrgn/cowholes.c">cowholes.c</A> - source 
+code<BR><A href="wndrgn/cowholes.exe">cowholes.exe</A> 
+- compiled executable<BR></P>
+</BODY></HTML>

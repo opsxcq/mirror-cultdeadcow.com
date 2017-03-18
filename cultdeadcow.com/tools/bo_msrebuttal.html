@@ -1,0 +1,720 @@
+
+<html>
+<head>
+<title>cDc responds to Microsoft about Back Orifice</title>
+</head>
+
+<body bgcolor = "#96a096" text = "#000000">
+
+<font size=6>
+Cult of the Dead Cow responds to Microsoft
+about Back&nbsp;Orifice
+</font>
+<p>
+
+<font size = +1>
+This is our response to Microsoft's 
+<a href="http://www.microsoft.com/security/bulletins/ms98-010.asp">damage 
+control statement</a>
+of 1998-Aug-04.
+<br>
+
+For a statement regarding our motives for releasing this tool,
+take a gander at
+<a href="http://cultdeadcow.com/news/response.txt">our moral justifications</a>.
+</font>
+<p>
+
+
+<font size = -1>
+last revision: 1998-Aug-10
+</font>
+<p>
+
+
+<table>
+
+<tr>
+
+<td>
+<font size=5>
+<tt>
+<b>
+Microsoft
+</b>
+</tt>
+</font>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td>
+<font size=5>
+cDc
+</font>
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+On July 21, a self-described hacker group known as the Cult of the
+Dead Cow released a tool called BackOrifice, and suggested that
+Windows users were at risk from unauthorized attacks.  
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+Actually, we released it on August 3rd.
+<p>
+
+Incidentally, it's been downloaded at least 35,000 times as of 11:55pm, August 7th.
+</td>
+</tr>
+
+
+<tr>
+
+<td valign=top>                                                                 
+<tt>                                                                            
+Microsoft takes                                                                 
+security seriously, and has issued  this bulletin to advise customers
+that Windows&nbsp;95 and Windows&nbsp;98 users following safe computing practices
+are not at risk...
+</tt>                                                                           
+</td> 
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+This is simply false.  Our view is no degree of "safe computing practices"
+can compensate for the security bugs and lack of functionality
+in Windows&nbsp;95 &amp; 98.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+...and Windows&nbsp;NT users are not threatened in any way by this tool.
+<p>
+
+<b>The Claims About BackOrifice</b>
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+For the present.
+But remember that the tool has been around for less than a week.
+</td>
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+According to its creators, BackOrifice is "a self-contained,
+self-installing utility which allows the user to control and monitor 
+computers running the Windows operating system over a network". The
+authors claim that the program can be used to  remotely control a
+Windows computer, read everything that the user types at the keyboard,
+capture images that are  displayed on the monitor, upload and download
+files remotely, and redirect information to a remote internet site.
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+Back Orifice does not do anything that the Windows&nbsp;95/98 operating
+system was not intended to do.  It does not take advantage of any bugs
+in the operating system or use any undocumented or internal APIs.  It
+uses documented calls built into Windows to do such things as:
+<p>
+
+<ul>
+<li>Reveal all cached passwords.  This includes passwords for web
+sites, dialup connections, network drives and printers, and the
+passwords of any application that stores user passwords in the  
+operating system.
+(This Windows feature was implemented apparently so the user won't be 
+inconvenienced by having to remember his
+passwords every time he uses his computer.)
+<p>
+
+<li>Create shares hidden to the user and list the passwords of existing
+shares.
+<p>
+
+<li>Make itself mostly invisible.  Back Orifice does not appear in the
+control-alt-delete list of running programs, and can only be killed by
+a low level process viewer which Windows&nbsp;95 does not ship with.  To
+their credit, Windows&nbsp;98 does ship with a process viewer, but it is not
+installed by default.
+</ul>
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<b>The Truth About BackOrifice</b>
+</tt>
+</td>
+
+<td colspan=2>&nbsp;</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+BackOrifice does not expose or exploit any security issue with the
+Windows platform or the BackOffice suite of products.
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+Back Orifice has nothing to do, at all, with the Back Office suite.  In
+fact, the Back Office suite only runs on NT, which isn't even supported
+by Back Orifice yet.  Apples and Oranges.
+</td>
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+BackOrifice does not compromise the security of a Windows network. 
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+cDc would like to know where exactly Microsoft is getting its definition
+of 'compromise the security'.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+Instead, it relies on the user to install it... 
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+Back Orifice does <b>not</b> rely on the user for its installation.
+To install it,
+it simply needs to be run.  Thanks to some actual exploits, there are
+several ways a program could be run on a windows computer, not only
+without the user's approval, but without the user's knowledge.  
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+...and, once installed, has only the rights and privileges that 
+the user has on the computer.
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td>
+This is correct. Once installed, Back Orifice can only do what the user
+sitting at the computer could do, if he has programs that do everything
+that Back Orifice does.
+<p>
+
+This includes:
+<ul>
+<li>seeing what's on the screen
+<li>seeing what's typed into the keyboard
+<li>installing software
+<li>uninstalling software
+<li>rebooting the computer
+<li>viewing stored passwords
+<li>viewing and editing the system registry
+<li>connecting and disconnecting the machine to other network hosts
+using <b>anyone's</b> username &amp; password
+<li>running arbitrary plugins or programs, which of course could
+employ any manner of exploit or attack
+</ul>
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+For a BackOrifice attack to succeed, a chain of very specific events
+must happen:
+</tt>
+</td>
+
+<td colspan=2>&nbsp;</td>
+
+</tr>
+
+
+<tr>
+   
+<td valign=top>
+<tt>
+<ul>
+<li>The user must deliberately install, or be tricked into installing the 
+program
+</ul>
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+<b>Not at all.</b>
+
+Thanks to various security bugs and common system misconfigurations,
+there are often ways
+to deliver and execute arbitrary code on a Windows machine.
+<p>
+
+Even lacking such an exploit, it's easy enough to provide the average
+Windows users a reason for downloading &amp; installing programs
+from untrusted sources.  It happens all the time.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<ul>
+<li>The attacker must know the user's IP address. 
+</ul>
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+<b>Untrue.</b>
+
+Back Orifice can sweep a range of IP addresses and network blocks
+to hunt for installations
+of its server software.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<ul>
+<li>The attacker must be able to directly address the user's
+computer; e.g., there must not be a firewall between the attacker
+and the user.
+</ul>
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+
+<!-- And packets have to be able to get to and from the server. --> 
+<b>Incorrect.</b>
+
+The mere presence of a firewall or proxy server is not in itself a
+complete solution.
+<p>
+
+For good, reliable protection for Windows machines on the internet, the cDc
+can recommend nothing better than a good, <b>properly configured</b>
+firewall.
+
+However, a firewall that permits ANY traffic is still a potential risk.
+<p>
+
+Back Orifice can communicate over any available port. Therefore, if
+the firewall lets through any UDP packets at all, two-way communication 
+can be established.
+<p>
+
+As for file transfers originating at the remote machine, Back Orifice can
+use TCP to send data out through the firewall.
+<p>
+
+Not to mention the hundreds of thousands of Windows&nbsp;95
+and 98 boxes connected to the internet via a dialed connection through
+their local or national isp.  For mass ip vendors like those, a
+firewall simply isn't reasonable.  Most of the internet simply wouldn't
+be accessible anymore.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<b>
+What Does This Mean for Customers Running Windows&nbsp;95 and Windows&nbsp;98?
+</b>
+</tt>
+</td>
+
+<td colspan=2>&nbsp;</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+BackOrifice is unlikely to pose a threat to the vast majority of
+Windows&nbsp;95 or Windows&nbsp;98 users, especially those who follow safe
+internet computing practices. Windows&nbsp;95 and Windows&nbsp;98 offer a set of
+security features that will in general  allow users to safely use
+their computers at home or on the Internet. Like any other program,
+BackOrifice must be installed  before it can run. 
+</tt>
+</td>
+
+<td colspan=2>&nbsp;</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+Clearly, users
+should prevent this installation by following good practices like not
+downloading unsigned executables, and by insulating themselves from
+direct connection to the Internet with Proxy Servers and/or firewalls 
+wherever possible.
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+cDc remembers a day when PC software was written by anyone who had a
+creative idea for a cute, useful, interesting, or even just plain
+silly program and being able to share that program with friends who
+might also enjoy the program.  It is unfortunate that the only software
+we're allowed to run now is written by large companies.  It's a good
+thing we can still trust them not to do something unwanted to our
+computer!
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+Generally, computers running Windows&nbsp;95 and Windows&nbsp;98 are not
+vulnerable if:  
+</tt>
+</td>
+
+<td colspan=2>&nbsp;</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<ul>
+<li>The computer is not connected to the outside world
+</ul>
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+Unless someone <b>on the inside</b> wants control of your machine.
+<p>
+
+Perhaps your employer is using B.O. to keep track of its human resources.
+(As a matter of fact, in most states this would be entirely legal.)
+Or suppose one of your coworkers is just plain nosy.
+<p>
+
+In these circumstances, it doesn't matter if your computer is on the
+internet.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<ul>
+<li>The computer is connected to the Internet through an Internet
+service provider that dynamically assigns IP addresses - as the vast
+majority of ISPs already do.
+</ul>
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+Unless the dynamic address assigned is always in the same subnet, (as
+the vast majority of ISPs do).  In which case, <b>B.O. can scan a range of
+IP addresses to find your machine at its new address</b>.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<ul>
+<li>The computer is on a network with a firewall or proxy server between
+it and the attacker. 
+</ul>
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+See above ("firewalls").
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<b>
+What Does This Mean For Customers Running Windows&nbsp;NT?  
+</b>
+</tt>
+</td>
+
+<td colspan=2>&nbsp;</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+There is no threat to Windows&nbsp;NT Workstation or Windows&nbsp;NT Server
+customers; the program does not run on the  Windows&nbsp;NT platform.
+BackOrifice's authors don't claim that their product poses any threat
+to Windows&nbsp;NT.  Windows&nbsp;NT Workstation and Server offer a
+comprehensive set of security features that make it the best choice for
+business users' mission-critical applications.
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+Don't go upgrade to Windows&nbsp;NT just yet.
+<p>
+
+We will be releasing a Windows&nbsp;NT version as soon as we
+get around to installing that OS.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+<b>
+What Customers Should do
+</b>
+<p>
+
+Customers do not need to take any special precautions against this
+program.  However, all of the normal precautions  regarding safe
+computing apply:
+</tt>
+</td>
+
+<td colspan=2>&nbsp;</td>
+
+</tr>
+
+
+<tr>
+
+<td valign=top>
+<tt>
+Customers should keep their software up to date and should never
+install or run software from unknown sources -- this applies to
+both software available on the Internet and sent via e-mail. Reputable
+software vendors digitally sign their software to verify its
+authenticity and safety.   Companies should use the security
+features provided by Microsoft products, to prevent the introduction of
+this and other malicious software, and should monitor network
+usage to prevent insider attacks.
+</tt>
+</td>
+
+<td width=15>&nbsp;</td>
+
+<td valign=top>
+Rather than having to abstain from using non-big company "Reputable
+Vendor" software, how about providing some protection?
+How about the ability to monitor and even prevent disk and registry
+access so people can run software with confidence, so that even if the 
+author has malicious intent, the software has become infected with an unknown 
+virus or trojan, or there is a bug or malfunction, there is no damage it 
+can do.
+</td>
+
+</tr>
+
+</table>
+<p>
+
+
+Incidentally, Microsoft is also falsely claiming that they
+tried to contact us regarding BO.  On the contrary, Microsoft
+has repeatedly shown little interest when contacted about security
+holes in their products in the past.  In general, they have needed
+to have their noses rubbed in it before acknowledging any problems.
+<p>
+
+cDc issued a preliminary press release about Back Orifice more than a 
+month before releasing the software.  A wider-distribution Press
+Release was issued on July 21st, more than a week before the
+demonstration at DefCon VI... and again, nothing from Microsoft.
+<p>
+
+Other than issuing silly statements to the press, among other things calling 
+us irresponsible and comparing BO to Satan (again, apples and oranges), 
+they have never contacted us.  For over 3 days at Defcon, no one from
+Microsoft introduced or identified themselves to us.  Immediately
+following our presentation, we were swarmed by the media and the curious...
+but no one from Microsoft.
+<p>
+
+It wasn't until August 4 that Scott Culp, Security Product Manager
+for Windows&nbsp;NT Server contacted us in e-mail:
+<p>
+
+<blockquote>
+<tt>
+Date: Tue, 4 Aug 1998 11:41:53 -0700<br>
+From: Scott Culp &lt;secure@microsoft.com&gt;<br>
+To: "'veggie@cultdeadcow.com'" &lt;veggie@cultdeadcow.com&gt;<br>
+Subject: BackOrifice<br>
+<p>
+
+I recently received report of your BackOrifice tool, and would welcome an
+opportunity to talk with you about the tool and the security
+vulnerabilities you believe it exploits.  Microsoft is interested in
+making our products as secure as possible for our customers, and I'd look
+forward to talking with you about this issue.
+</tt>
+</blockquote>
+<p>
+
+We immediately called him back.  He was interested in learning about
+every vulnerability we knew of.  "The biggest one we know of is
+Windows&nbsp;95/98 itself," to which he agreed.
+<p>
+
+Later that same day, Microsoft issued another statement -- this
+time mentioning that they had tried to contact us and had gotten
+no response.
+<p>
+
+The goliath doth protest too much, methinks.
+<p>
+
+
+The fact remains that Back Orifice is only as dangerous as Microsoft's 
+security is deficient.
+<p>
+
+How about a for-instance?
+<p>
+
+Win95/98 caches frequently-used passwords in <b>clear-text</b>, which BO
+has access to.  This often includes passwords users use for their ISPs.
+But if one is to believe the missives which issue from the Microsoft
+Marketing Department, ISPs have nothing to worry about.  Either that
+or ISPs across the globe should encourage all their customers to
+upgrade to NT?
+<p>
+
+Is Windows&nbsp;95/98 the platform on which you perform 'secure' transactions?
+Is a Windows&nbsp;95/98 platform an endpoint of your corporate VPN?  If so,
+maybe you should be worried.
+<p>
+
+Back Orifice is a Rorschach for Microsoft credibility. Microsoft's own 
+official response to us was issued as a marketing bulletin!  Does anybody
+else besides cDc find it disturbing that the Marketing Department is 
+running the show over there? 
+<p>
+
+Oh, never mind.  Forget we ever mentioned it.  Listen to
+Microsoft; don't worry, be happy.  Everything will be all right. 
+<b>Move along, there's nothing to see here.</b>
+<p>
+
+</body>
+</html>

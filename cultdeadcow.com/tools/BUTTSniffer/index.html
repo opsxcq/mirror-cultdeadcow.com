@@ -1,0 +1,218 @@
+
+<html><head><title>BUTTSniffer Homepage</title></head>
+<body bgcolor="#96a096" text="#000000">
+<center>
+<font color="#000000" size="+2">
+BUTTSniffer Prerelease 0.9.3<br>
+<b>Public Beta Release</b><br>
+</font>
+</center>
+
+<center>
+<table bgcolor="#ffffff" border="0" cellpadding="24" cellspacing="24" width="100%">
+<tbody><tr><td>
+
+<h3>Description:</h3><blockquote>
+BUTTSniffer is a packet sniffer and network monitor for Win95, Win98 and
+also Windows NT 4.0.
+It works as a standalone executable, and as plugin for Back Orifice. Want to
+know what's <i>really</i> going on on your network segment? You need
+BUTTSniffer.<p>
+It features the following:</p><ul>
+<li><b>TCP Connection monitoring</b>. Full and split screen. Text and Hexadecimal
+views.<br>
+</li><li><b>Password sniffing</b>. Full phrasecatcher built in. Currently
+supports HTTP basic authentication, FTP, Telnet, POP2 and POP3. Support pending
+for IMAP2, RLogin, and possibly other protocols<br>
+</li><li><b>Packet filtering</b>. Firewall style filtering lists. Exclude/include
+ranges of IP addresses and ports.<br>
+</li><li><b>Multiple interface support</b>. Can be started on any of the system's
+network interfaces. Multiple instances of BUTTSniffer can be run at the same
+time.<br>
+</li><li><b>Interactive mode</b>. Spawns a port that you can telnet to, and
+displays an easy to use vt100 menu based user interface for remote sniffer
+access.<br>
+</li><li><b>War mode</b>. War mode features include connection resetting. More
+features to come!
+</li><li><b>Win95, Win98, and Windows NT operating system support</b>. Use it
+both at home <i>and</i> at work!
+</li></ul>
+</blockquote>
+</td></tr><tr><td>
+<h3>News:</h3><blockquote>
+
+<b><font color="#ff3030">11/28/1998</font></b> - Version 0.9.3 released.<p>
+
+<b><font color="#ff3030">11/2/1998</font></b> - Version 0.9.2 released.</p><p>
+
+<b><font color="#ff3030">10/9/1998</font></b> - Version 0.9.1a hotfix released.</p><p>
+
+<b><font color="#ff3030">10/7/1998</font></b> - Version 0.9.1 released.</p><p>
+
+<b><font color="#ff3030">10/5/1998</font></b> - Update on source code 
+availability: The final release 1.0 will be <i>Partially Open Source</i>. 
+Note that some of the material being released will be free, but
+some material is proprietary. Due to the fact that some of the code was
+written while working for a company with trade secrets (very few relating to
+this project, but nonetheless I am under contract), I am unable to release
+the source code fully. The source for the actual low level packet sniffer
+falls under this restriction, and will be left out. So, in order to compile
+the code, you will have to use a static link library that I will provide,
+but the source code will not be available for the library at this time. It
+may be opensourced at a later date.</p><p> 
+
+<b><font color="#ff3030">10/2/1998</font></b> - BUTTSniffer Beta 0.9 released.<br>
+</p></blockquote>
+
+</td></tr><tr><td>
+
+<h3>Files:</h3><blockquote>
+<b><font color="#ff3030">Version 0.9.3</font></b><br>
+<a href="http://packetstormsecurity.nl/sniffers/buttsniffer/BUTTSniff-0.9.3.zip">BUTTSniff-0.9.3.zip</a><br>
+<br>
+<b><font color="#ff3030">Archived Versions (old)</font></b><br>
+<a href="http://packetstormsecurity.nl/sniffers/buttsniffer/BUTTSniff-0.9.2.zip">BUTTSniff-0.9.2.zip</a><br>
+</p></blockquote>
+
+</td></tr><tr><td>
+
+<h3>Changelog:</h3><blockquote>
+<b><font color="#ff3030">Version 0.9.3</font></b>: Numerous bugs fixed, and a
+major low level overhaul. The Windows NT support is greatly improved, with a
+dynamically loading service, making it as convenient on Windows NT as on
+Windows 98 and 95. Note that the service is a 'manual start' service, and if
+the administrator runs the executable once, the service is installed, and
+users of any privelege can run the executable after that point (just have to
+get the sucker installed!) The packet driver code for both the Windows NT and 95/98
+drivers was also debugged extensively. Next release should support different
+encapsulations other than ethernet. Token ring first, PPP next (so I don't
+keep dropping the dial-up user's connections). FDDI anyone? Anyway. Some
+interface bugs were fixed, but in terms of new features, there has been
+little added in this release. There <i>is</i> a new way to specify
+interfaces by their 'number' as opposed to their 'name', which makes using
+it on NT machines much simpler. Errors are also handled nicer in this
+release. On a more humorous note, I figured out a good icon for the
+executable version. More coming soon, but 0.9.4 may not be released until
+mid-january due to other more important projects. What good would an NT Back
+Orifice plugin be without...<p>
+<b><font color="#ff3030">Version 0.9.2</font></b>: Upgraded to work with
+Windows NT! Also added IP and port filtering for direct disk dump.
+The NT version requires that the packet.sys driver be installed. To do this
+go to your network control panel and under the 'protocols' tab, click add
+and point it to the oemsetup.inf file. In future releases, the driver will
+automatically be installed for you if it is run with administrative
+priveleges. Note that Windows NT will ask you to reboot, but you don't have
+to. The driver will automatically start the service without you needing to
+do anything. Also, the packet32.dll isn't actually used by the executable,
+and it will be removed in the next release. I just haven't gotten around to
+hacking Microsoft's generic INF file very much yet. Packet32.dll/packet.sys
+are based on some extremely FLAWED Microsoft packet driver code which I
+painstakingly cleaned up. Any other versions of packet.sys out there should
+probably be replaced with my version. Also, UDP code was added. But for what
+you ask? That's for you to find out... The next release will primarily be
+for cleanup and reducing the 'known bugs' count.</p><p>
+<b><font color="#ff3030">Version 0.9.1a</font></b>: Hotfix to correct major
+bug with DLL version. DLL version was not extracting and loading the sniffer
+VXD correctly and was thus not putting the card into promiscuous mode.</p><p>
+<b><font color="#ff3030">Version 0.9.1</font></b>: Minor cosmetic bugfixes. Added OS
+version detection. Implemented IP and TCP packet generators and added
+ethernet packet sending code. Added war mode connection delete option on
+connection monitor. Added
+war mode configuration option to 'Configure' menu.</p><p>
+<b><font color="#ff3030">Version 0.9</font></b>: Initial release</p><p>
+</p></blockquote>
+
+
+</td></tr><tr><td>
+
+<h3>Known Bugs:</h3><blockquote>
+<li>Known <i>crash</i> condition on the Toshiba Libretto series of 
+mini-laptops (GPF on execution). Might be a problem with pcmcia ethernet
+or something else. Not sure. Also, the code couldn't put a Gateway Telepath
+33.6 modem/ethernet combo card into promiscuous mode. This is probably the
+fault of Gateway's card driver for Windows, since the card worked fine 
+when used under Linux.<p> 
+</p></li><li>Terminating BUTTSniffer while running on a dialup adapter may
+disconnect the modem. This is also a problem for many other network
+monitoring tools. Anyone who knows why this happens should email me. I will
+try to implement a workaround.<p>
+</p></li><li>Connection reset may not be done exactly right. Connection drops, but
+despite RST packets being sent to both sides, some operating systems
+(Solaris in particular) don't recognize the connection as being dropped
+right away. Works fine for Windows clients though... Will look into this in
+more detail. Must have missed something.<p>
+</p></li><li>Does not handle resizable telnet clients correctly (at all!). Also, the password
+sniffer view doesn't handle longer usernames/passwords.<p>
+</p></li><li>Telnet client must operate in 'character at a time' mode in order to
+function properly in interactive mode. This really isn't a bug in
+BUTTSniffer, but is a condition that must be handled on the client end. Most
+telnet clients have no problem with this. Some, you have to flip a switch to
+force the character at a time mode. I will see about getting telnet
+negotiation to force this on all clients.<p>
+</p></li></blockquote>
+
+<h3>Planned Improvements:</h3><blockquote>
+<li>Low level support for more encapsulation types (PPP, Token Ring, etc)
+</li><li>Standalone version that runs without a console window
+</li><li>Writing better documentation and a FAQ
+</li><li>More war mode options including Session Hijacking, and various other things...
+
+</li></blockquote>
+</td></tr><tr><td>
+<h3>Notes:</h3><blockquote>
+<b>Keep watching here, as this page will be updated often. 
+New releases are always on the way!</b><p>
+
+For help on the standalone version, run the executable from
+a console and the usage information will be displayed.</p><p>
+The syntax for the BUTTPlug functions are as follows:</p><p>
+
+Use the "Plugin Execute" command with the following two fields:<br>
+<table border="2" cellpadding="4" cellspacing="0">
+<tbody><tr bgcolor="#000000">
+<th><font color="#ff2020">Command</font></th>
+<th><font color="#20ff60">Args</font></th>
+<th><font color="#6060ff">Description</font></th>
+</tr>
+<tr>
+<td>buttsniff.dll:_List</td>
+<td>(none)</td>
+<td>Lists names of network interface devices</td>
+</tr>
+<tr>
+<td>buttsniff.dll:_Dump</td>
+<td>&lt;Interface Number&gt; &lt;Log File&gt;
+&lt;Dump Type&gt; [filter] </td>
+<td>Dumps packet data to disk. Valid dump types are:<br>
+<li>r: Raw Frames (dumps raw network traffic) <br>
+</li><li>e: Encapsulation (dumps decoded packets with encapsulation information)<br>
+</li><li>p: Full protocol (dumps fully decoded packets with protocol information)<br>
+
+Valid filters are:<br>
+</li><li>A single number representing a port to be monitored (e.g. 80)<br>
+</li><li>port range to be monitored (e.g. 141-1024)<br>
+</li><li>A filename containing a list of IP and port filter rules<br>
+Read the 'readme.txt' for more information and examples.<br>
+Filters are only active on dump type 'p'.<br>
+</li></td></tr>
+<tr>
+<td>buttsniff.dll:_Interactive</td>
+<td>&lt;Interface Number&gt; &lt;Port&gt;</td>
+<td>Starts the interactive sniffer on the specified port. Telnet to this
+port to use the sniffer. (use VT100 terminal type)</td></tr>
+</tbody></table>
+</p></blockquote>
+
+</td></tr></tbody></table>
+
+Send comments to <i>dildog@l0pht.com</i>.<br>
+<p align="center">
+<font size="-2">
+BUTTSniffer is Copyright (C) 1998, Cult of the Dead Cow<br>
+BUTTSniffer is redistributable. No portion of the BUTTSniffer<br>
+source code may be used without permission of the author unless<br>
+otherwise marked in the distribution.<br>
+Send email for licensing details.<br>
+</font>
+</p>
+</center></body></html>

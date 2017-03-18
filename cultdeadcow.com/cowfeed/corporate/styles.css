@@ -1,0 +1,397 @@
+f/* ------ START CSS FILE ------------------------------------------- */
+/* ----------------------------------------------------------------- */
+/* ------ THIS GLOBAL FILE DEFINED LAYOUT, COLORS AND FONTSTYLES --- */
+/* ------ FOR ALL CONTENT FILES ------------------------------------ */
+/* ----------------------------------------------------------------- */
+
+/* ------ IE-HACKS ------------------------------------------------- */
+
+/* ie holly-hack, hides from ie-mac, only ie-win sees this \*/
+* html #sidebar {
+	margin-left: 17px
+}
+* html #contentarea {
+	margin-right: 0;
+	height: 1%
+}
+/* end hide from ie-mac */
+
+/* ------ GLOBAL MARGIN, PADDING AND FONT -------------------------- */
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: Georgia, Verdana, Geneva, Arial, Helvetica, Sans-Serif
+}
+
+/* ------ MAIN ----------------------------------------------------- */
+
+body {
+	text-align: center;
+	color: #000000;
+	background-color: #FFffff;
+	font-size: 75%;
+	background-image: url(bg_main.gif);
+	background-repeat: repeat-x
+}
+
+#wrap {
+	margin: 0 auto;
+	width: 760px;
+	text-align: left
+}
+
+/* ------ HEADER STYLES -------------------------------------------- */
+
+#header {
+	background-image: url(cowfeed-banher2.jpg);
+	background-repeat: no-repeat
+}
+
+h1 {
+	height: 174px;
+	text-indent: -999em;
+	color: #ffffff;
+	background-repeat: no-repeat;
+	background-position: right top
+}
+
+h2 {
+	height: 47px;
+	padding: 0 20px 0 40px;
+	color: #ffffff;
+	font-size: 1.6em;
+	line-height: 2.4em;
+	font-weight: normal;
+	background-image: url(bg_h2.gif);
+	background-repeat: no-repeat
+}
+#header h2 a { 
+	text-decoration:none }
+
+#header h2 a:link, #header h2 a:visited, #header h2 a:active, #header h2 a:hover { 
+	COLOR: #ffffff }
+
+
+/* ------ CONTENT STYLES ------------------------------------------- */
+
+#contentarea {
+	margin: 0 210px 0 0
+}
+
+#contentarea a
+{ text-decoration:none }
+
+#contentarea a:link, #contentarea a:visited, #contentarea a:active {
+	color: #B80000
+}
+
+#contentarea a:hover {
+	color: #686868;
+	text-decoration: none
+}
+
+#contentarea .content_top {
+	margin: 20px 0 0 0;
+       height: 20px;
+	background-color: #f9f9f9;
+	background-image: url(bg_content_top.gif);
+	background-repeat: no-repeat
+}
+
+#contentarea .content {
+	width: 470px;
+	padding: 10px 40px;
+	line-height: 1.6em;
+	background-color: #f9f9f9;
+	background-image: url(bg_content.gif);
+	background-repeat: repeat-y
+}
+
+#contentarea .content_bottom {
+	height: 20px;
+	font-size:x-small;
+	background-color: #f9f9f9;
+	background-image: url(bg_content_bottom.gif);
+	background-repeat: no-repeat
+}
+
+#contentarea .content h3 {
+	font-size: 1.4em
+}
+
+#contentarea .content h4 {
+	font-size: 1.3em
+}
+
+#contentarea .content h3, #contentarea .content h4, #contentarea .content p {
+	padding: 0.5em 0 0.5em 0;
+}
+
+#contentarea .footer_top {
+	margin: 20px 0 0 0;
+	height: 20px;
+	background-image: url(bg_footer_top.gif);
+	background-repeat: no-repeat
+}
+
+#contentarea .footer {
+	width: 470px;
+	padding: 10px 40px;
+	line-height: 1.6em;
+	text-align:center;
+	font-size:10px;
+	background-image: url(bg_footer.gif);
+	background-repeat: repeat-y
+}
+
+#contentarea .footer_bottom {
+	height: 20px;
+	background-image: url(bg_footer_bottom.gif);
+	background-repeat: no-repeat
+}
+
+#contentarea .footer .subnavi {
+	padding: 0 0 1em 0;
+	font-size: 0.9em
+}
+
+#contentarea .footer .subnavi a {
+	color: #ffffff;
+	text-decoration: none
+}
+
+#contentarea .footer .subnavi a:hover {
+	color: #ffffff;
+	background-color: #212160
+}
+
+#contentarea .footer p {
+	font-size: 0.9em
+}
+
+#contentarea .plaintext {
+	padding: 5px 0 0 0;
+	font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	font-weight: normal;
+	text-align: right;
+	color: #B80000;
+	line-height: 1.6em;
+	font-size: 0.8em
+}
+
+/* ------ CONTENT STYLES ------------------------------------------- */
+
+.content hr {
+	margin: 0 0 1em 0;
+	border: 0;
+	height: 1px;
+	color: #ffffff;
+	background-color: #ffffff
+}
+
+.content ul {
+	padding: 0 0 1em 3em;
+	list-style-type: disc
+}
+
+.content ul.listnospace {
+	padding: 0 0 0 3em;
+	list-style-type: disc
+}
+
+.content ol {
+	padding: 0 0 1em 3em
+}
+
+.content ol.listnoindent {
+	padding: 0 0 1em 2em
+}
+
+.content .bottomspace {
+	padding: 0 0 1em 0
+}
+
+#contentarea .content p.textindent {
+	padding: 0.5em 0 0.5em 3em
+}
+
+#contentarea .content img {
+	padding: 5px;
+	border: 1px solid #e3e3e3;
+	background-color: #ffffff
+}
+
+
+/* ------ SIDEBAR STYLES ------------------------------------------- */
+
+#sidebar {
+	width: 190px;
+	float: right;
+	color: #000000
+}
+
+#sidebar .menu_top {
+	margin: 20px 0 0 0;
+	height: 20px;
+	background-image: url(bg_menu_top.gif);
+	background-repeat: no-repeat
+}
+
+#sidebar ul {
+	list-style-type: none
+}
+
+#sidebar li {
+	list-style: none;
+	font-size: x-small
+}
+
+#sidebar li a {
+	color: #000000;
+	width: 150px;
+	padding: 7px 20px;
+	display: block;
+	border-top: 1px solid #282828;
+	border-bottom: 1px solid #282828;
+	text-decoration: none;
+	background-image: url(bg_menu.jpg);
+	background-repeat: repeat-y
+}
+
+#sidebar li a:hover {
+	background-image: none;
+	background-color: #B80000
+}
+
+#sidebar .menu_bottom {
+	height: 20px;
+	background-image: url(bg_menu_bottom.gif);
+	background-repeat: no-repeat
+}
+
+#sidebar .sidebox_top {
+	margin: 20px 0 0 0;
+	height: 20px;
+	background-color: #efeeee;
+	color: #000000;
+	background-image: url(http://www.cultdeadcow.com/cowfeed/corporate/bg_sidebox_top.gif);
+	background-repeat: no-repeat
+}
+
+#sidebar .sidebox_content {
+	padding: 0 20px;
+	line-height: 1.6em;
+	font-size: 0.9em;
+	background-color: #efeeee;
+	background-image: url(bg_sidebox.gif);
+	background-repeat: repeat-y
+}
+
+#sidebar .sidebox_bottom {
+	height: 20px;
+	background-color: #efeeee;
+	background-image: url(http://www.cultdeadcow.com/cowfeed/corporate/bg_sidebox_bottom.gif);
+	background-repeat: no-repeat
+}
+
+#sidebar .plaintext {
+	margin: 20px 0 0 0;
+	padding: 10px 20px;
+	color: #0080c0;
+	line-height: 1.6em;
+	font-size: 0.9em
+}
+
+#sidebar .sidebox_top {
+	margin: 20px 0 0 0;
+	height: 20px;
+       color:#000000;
+	background-color: #efeeee;
+	background-image: url(bg_menu_top.gif);
+	background-repeat: no-repeat
+}
+
+#sidebar .sidebox_top p {
+	padding: 5px 0 0 0;
+	text-align: center;
+	color: #ffffff
+}
+
+#sidebar .sidebox_content {
+	padding: 0 20px;
+	line-height: 1.6em;
+	color: #ffffff
+	background-color: #efeeee;
+	background-image: url(bg_sidebox.gif);
+	background-repeat: repeat-y
+}
+
+#sidebar .sidebox_bottom {
+	height: 20px;
+
+	background-color: #efeeee;
+	background-image: url(bg_menu_bottom.gif);
+	background-repeat: no-repeat
+}
+
+#sidebar .sidebox_content p {
+	padding: 5px 0
+}
+
+#sidebar .sidebox_content img {
+	padding: 5px;
+	border: 1px solid #ffffff;
+	background-color: #000000
+}
+
+#sidebar .sidebox_content img:hover{
+	background-color: #B80000
+}
+
+/* ------ LINK STYLES ---------------------------------------------- */
+
+
+#contentarea .footer, #contentarea .footer a, #sidebar .plaintext a {
+	text-decoration: none;
+	color: #000000
+}
+
+#contentarea .footer a:hover, #sidebar .plaintext a:hover {
+	color: #B80000
+}
+
+#contentarea .plaintext a {
+	font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	color: #B80000;
+	text-decoration: none
+}
+
+#contentarea .plaintext a:hover {
+	color: #000000;
+	text-decoration: none
+}
+
+#sidebar .sidebox_content a {
+	color: #ffffff;
+	text-decoration:none
+}
+
+#sidebar .sidebox_content a:hover {
+	color: #B80000
+}
+
+
+
+/* ------ CLEARING STYLES ------------------------------------------ */
+
+.clearer {
+	clear: both;
+	margin: 0 0 3em 0
+}
+
+.clearer a {
+text-decoration:none
+}
+
+/* ------ END CSS FILE --------------------------------------------- */

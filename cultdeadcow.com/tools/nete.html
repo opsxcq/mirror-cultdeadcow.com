@@ -1,0 +1,198 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Information about the Netbios Networking APIs</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.2900.2523" name=GENERATOR></HEAD>
+<BODY text=#ffffff vLink=#cc0000 aLink=#ff0000 link=#ff0000 
+bgColor=#000000>
+<BR><BR>
+<P>The Netbios networking APIs under Windows 9x and NT are a mess. To start 
+with, many of them are not implemented under 9x. Although you may be able to 
+link your program without problem, many of the APIs return 120 
+ERROR_CALL_NOT_IMPLEMENTED:This function is not supported on this system. More 
+frustrating is that many of the APIs that are implemented return pointers to 
+different types of structures on 9x and NT. Much of the documentation around 
+these APIs is either misleading, flat out wrong, or missing. Many of the APIs 
+are listed as being obsolete while no replacement for their functionality has 
+been provided, yet several programs that come with windows like NetWatch.exe, 
+and Net.exe, and NBTstat.exe clearly use these APIs which supposedly are only 
+available for lazy programmers who don't want to rewrite their apps for the 
+win32 API spec. Under NT most of the Net* functions are declared as accepting 
+character pointers but in fact they want Unicode strings. The same is true for 
+many of the structures returned, their members are declared as being pointers to 
+character strings when in fact they are unicode strings. Some of the APIs are 
+just plain misdeclared. </P>
+<P>For any of these APIs to work on a remote target machine, that machine must 
+have the Netbios protocol installed and bound to the adapter which you are 
+communicating on. Most of the Net*Enum APIs require that the server service be 
+running, and many others rely on specific other services (like the messenger 
+service) to be able to retrieve data. All of these programs may only run under 
+NT. There is also a registry entry which can be set to further restrict what 
+information can be retrieved anonymously. </P>
+<H3>Netbios()</H3>
+<P>NBTstat.exe uses the Netbios() API to (among other things) send Netbios NAME 
+packets on udp port 137 to an IP address to retrieve the remote adapter status 
+of a Netbios interface. It also retrieves the names in the remote name table, 
+which applications have registered as listening on. Netbios names are 15 
+characters followed by a 16th binary value, and each names is registered as 
+being either unique or a group name. Many names are standardly registered by 
+specific apps, and by viewing the remote name list you can find out information 
+about what software and services are running on the computer, configuration 
+information such as the machine name, domain name and the name of the currently 
+logged in user. Also returned by the Netbios adapter status call is the MAC 
+address of the remote network adapter. If the "adapter" is actually a modem or 
+other type of dialup access, the address will be listed as 44-45-53-54-00-00 
+which in ascii spells out "DEST". If the adapter is a NIC, the MAC address is 
+the manufacturer assigned globally unique ID. Apparently NIC manufacturers have 
+started providing software with the hardware that allows you to change this ID 
+arbitrarily. For more information how what this program may be useful for check 
+the Microsoft documentation on the Netbios() API. </P>NetB.exe is a tool I have 
+written which is basically a commandline wrapper around the Netbios() API. It's 
+most useful command is ASTAT which retrieves the remote adapter status. Although 
+most of the information returned in this structure is left empty, there is still 
+a good deal of information available. In cases where no names are registered it 
+will still display the MAC address unlike NBTStat.exe which simply returns "Host 
+not found." Another problem with NBTstat.exe is that it uses some faulty logic 
+to decide what adapter to send the packets on, so if you have more than one 
+adapter (for instance a network card and a dialup connection) it will not 
+function properly. You must select the correct adapter number to use with 
+NetB.exe using the /A option. The adapter numbers correspond to the Lana Number 
+values in Control Panel-Network-Services-Netbios Interface-Properties. 
+<P></P>
+<P>The usage for NetB.exe is: </P><PRE>NetB v.93 - Questions, comments, bitches and bugs to sirdystic@cultdeadcow.com
+netb [Arguments] <COMMAND> [localname] [remotename]
+ Arguments:
+  /A AdapterNum   - Use adapter number AdapterNum (def 0)
+  /G              - Local name is a group name
+  /S              - SMB Relay mode
+  /P              - Pause before exit (holds added name till exit)
+  /W WaitMS       - Wait WaitMS milleseconds after EOF for final reads
+  /?              - This help
+ Command:
+  ADDNAME         - Add a name to the local name table
+  ASTAT           - Adapter status
+  DGRECV          - Receive a datagram
+  DGRECVBC        - Receive a broadcast datagram
+  DGSEND          - Send a datagram
+  DGSENDBC        - Send a broadcast datagram
+  ENUM*           - Enumerate LAN adapters
+  FINDNAME        - Find a name on the network
+  LISTEN          - Listens for connections
+  CALL            - Connect to a remote NetBIOS name
+     (* NT Only)
+ Note: Machine names are either a &lt; 16 char netbios name or an IP address.
+       The binary 16th char can be set by adding \xx to the end of the name
+       where xx is the hex value.  Default is 0. * is a special wildcard name.
+</PRE>
+<P>When using the LISTEN or CALL commands, NetB supports input from either the 
+console or a file via redirection. When using console input, entering of the 
+data to send begins when you begin typing, and the data is sent when a CR is 
+entered. NetB will exit when a CONTROL-Z is entered on a line of its own. When 
+using file input, the /S option can be used to have data sent in SMB packets if 
+the input file is formatted properly. It will send each packet and wait for a 
+response. If used with the LISTEN command, it will first wait for a packet from 
+the client and send responses. </P>
+<HR>
+
+<HR>
+<A href="nete/netb.cpp">Get SOURCE here</A> <BR><A 
+href="nete/getmacmf.cpp">Additional source file with 
+all the MAC prefix manufacturer names</A> 
+<HR>
+<A href="nete/netb.exe">Get BINARY here</A> 
+<HR>
+
+<HR>
+
+<H3>Net*Enum() APIs and NULL sessions</H3>
+<P>Many of the Net* APIs are documented as having been replaced by WNet* 
+functions, yet many of them accomplish things which can not be done with their 
+corresponding WNet function. Furthermore, there are many documentation errors 
+relating to these functions about what security access is required to call the 
+APIs at what levels, and Windows has had several bugs found (mostly pre SP3) 
+relating to what information levels can be returned to anonymous remote users. 
+Although you can not do "net view" on an NT or 2k machine normally, if you first 
+connect with a NULL session (username NULL and password NULL) the remote machine 
+treats you as an anonymous browser. To connect with a NULL session from the 
+commandline in NT use: </P><PRE>net use /user:"" \\MachineNameOrIP ""
+</PRE>
+<P>Now not only can you do a "net view" you can execute a number of APIs which 
+return information about the remote machine: 
+<P><PRE>GetServerInfo() - displays info about the remote machine including OS type, comment, and flags
+NetWkstaGetInfo() - displays info about remote machine including name and domains
+NetWkstaUserEnum() - displays the users logged into the remote machine
+NetShareEnum()  - displays hidden shares as well (shares ending in $)
+NetUserEnum()   - displays users including their Full name, description, type etc
+NetRemoteTOD()  - displays the remote clock and uptime
+NetTransportEnum() - displays remote information for NICs bound to NETBIOS including MAC addresses
+NetEnumerateTrustedDomains() - displays other domains that are trusted by the target machine's
+NetServerTransportEnum() - displays the name and MAC address of the adapters Netbios is bound to
+NetLocalGroupEnum() - displays remote local groups, their description and their members
+NetGroupEnum()  - displays remote global groups and their members
+NetServerEnum() - displays machines in the remote browse list (visible Netbios machines)
+NetSessionEnum()- displays user and machine name for connections to remote server
+</PRE>
+<P>There are also many other APIs which may require more access than a NULL 
+session. NetE.exe is a utility I have written which calls one or more of the 
+APIs that return remote information at each of their valid levels until data is 
+retrieved. NetE returns a LOT of information, so to see it I reccomend either 
+redirecting the output to a file or making your console window very large (I 
+typically do "mode 80,5000" so I have a scroll back buffer for the command 
+prompt). For machines with lots of users or shares, there may be long pauses 
+while the data is transfered, especially if that data is being transfered across 
+a slow network connection (like the internet). </P>
+<P>The usage for NetE.exe is: <PRE>NetE v1.0  Questions, comments, bitches and bugs to sirdystic@cultdeadcow.com
+
+Usage: NetE [Options] \\MachinenameOrIP
+ Options:
+ /0 - All NULL session operations
+ /* - All operations
+ /A - Workstation users
+ /B - Get PDC name
+ /C - Connections
+ /D - Date and time
+ /E - Exports
+ /F - Files
+ /G - Groups
+ /H - Workstation transports
+ /I - Statistics
+ /J - Scheduled jobs
+ /K - Disks
+ /L - Local groups
+ /M - Machines
+ /N - Message names
+ /O - Server info
+ /P - Printer ports and info
+ /Q - Platform specific info
+ /R - Replicated directories
+ /S - Sessions
+ /T - Transports
+ /U - Users
+ /V - Services
+ /W - RAS ports
+ /X - Uses
+ /Y - Remote registry trees
+ /Z - Trusted domains
+</PRE>
+<P>*NOTE* To compile this program you need to correct an error in the lmaccess.h 
+header file that is distributed with the Win32 sdk or MSVC. The API 
+NetEnumerateTrustedDomains() is declared as: <PRE>NTSTATUS
+ NetEnumerateTrustedDomains (
+</PRE>and it should be: <PRE>NTSTATUS NET_API_FUNCTION
+ NetEnumerateTrustedDomains (
+</PRE>
+<P></P>
+<HR>
+<A href="nete/nete.cpp">Get Source HERE.</A> 
+<HR>
+<A href="nete/nete.exe">Get Binary HERE.</A> 
+<HR>
+
+<P>Other great sources for much of the same information and more: 
+<P>
+<UL>
+  <LI><A href="http://www.mvps.org/win32/network/index.html">MVPS.org</A> 
+  <LI><A href="http://www.technotronic.com/winfingerprint/">Winfingerprint</A> 
+  </LI></UL>
+
+</BODY></HTML>

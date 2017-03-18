@@ -1,0 +1,395 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>The NetBIOS Name Service</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR></HEAD>
+<BODY text=#ffffff vLink=#cc0000 aLink=#ff0000 link=#ff0000 
+bgColor=#000000>
+<BR><BR><A 
+href="nbname.html#nbname">(Jump to info on 
+NBName)</A> 
+<H3>Background references:</H3>
+<UL>
+  <LI>RFC 1001: PROTOCOL STANDARD FOR A NetBIOS SERVICE ON A TCP/UDP TRANSPORT: 
+  CONCEPTS AND METHODS <A 
+  href="http://www.faqs.org/rfcs/rfc1001.html">http://www.faqs.org/rfcs/rfc1001.html</A> 
+
+  <LI>RFC 1002: PROTOCOL STANDARD FOR A NetBIOS SERVICE ON A TCP/UDP TRANSPORT: 
+  DETAILED SPECIFICATIONS <A 
+  href="http://www.faqs.org/rfcs/rfc1002.html">http://www.faqs.org/rfcs/rfc1002.html</A> 
+  </LI></UL>
+<H3>Background:</H3>
+<P>Machines using the NetBIOS protocol over a TCP/IP network use UDP packets 
+sent from and to UDP port 137 for name resolution and management. NetBIOS names 
+consist of 15 uppercase characters followed by a one-byte value (the service 
+value). Many <A href="nbname/nbsvcs.txt">service 
+values</A> are used as NetBIOS networks to identify well-known services and 
+other applications, but any application can register and use any name and value 
+if that name isn't a unique name and already in use on the network. The NetBIOS 
+service broadcasts a NAME REGISTRATION REQUEST to determine if a name is in use 
+before it attempts to use it. If the name is already in use, the machine owning 
+that name will DENY the name registration request, and the registration attempt 
+will fail. Each NetBIOS node (machine or interface) on the network maintains a 
+list of names that it owns and that node is responsible for defending any unique 
+names that it owns by denying other nodes' name registration requests. If a 
+NetBIOS node detects a name conflict it will mark the name in its local table as 
+being in conflict. RFC 1001 has this to say about names in conflict: </P><PRE>     Logically, a marked name does not exist on that node.  This means 
+   that the node should not defend the name (for name claim purposes), 
+   should not respond to a name discovery requests for that name, nor 
+   should the node send name refresh messages for that name. 
+   Furthermore, it can no longer be used by that node for any session 
+   establishment or sending or receiving datagrams.  Existing sessions 
+   are not affected at the time a name is marked as being in conflict. 
+
+   The only valid user function against a marked name is DELETE NAME. 
+   Any other user NetBIOS function returns immediately with an error 
+   code of "NAME CONFLICT". 
+</PRE>
+<H3>Issues:</H3>
+<P>Machines which do not react as the NetBIOS protocol dictates can disable 
+NetBIOS networks by causing the names in other NetBIOS name tables to become in 
+conflict. By denying all name registration requests, NetBIOS nodes will always 
+think that their names are already in use on the network. Windows machines 
+display the message that the chosen machine name is already in use and direct 
+the user to change the name and reboot. By sending a NetBIOS node NAME RELEASE 
+REQUESTS for each name in its table, a machine will stop responding to name 
+requests, not be able to create or receive any new NetBIOS connections or 
+datagrams and become isolated from the NetBIOS network. </P>
+<P>Because the protocol is entirely unauthenticated, any machine can respond to 
+broadcast queries for any name it sees queries for, possibly even beating 
+legitimate name holders to the response. The address of the responding node will 
+be returned and whatever type of connection was attempting to be made will 
+attempt to connect to that address instead. In fact, in ANY place in windows 
+that is expecting a host name, even an internet address like www.crap.edu, if 
+the system is unable to resolve the address via DNS it will attempt to resolve 
+it via a broadcast NetBIOS name packet if it is 15 characters or less. So if 
+someone on the network tried to connect to www.crap,edu (a common unnoticed 
+typo, a comma instead of a period) after the DNS request failed it will 
+broadcast a name query for WWW.CRAP,EDU. If fake services were set up, such as 
+telnet, ftp or whatever, most users wouldn't notice the mistake until it were 
+too late. </P>
+<H3>External solution:</H3>
+<P>Block UDP 137 on your firewall or router. If NetBIOS networking is not 
+required, for God's sake uninstall it! </P>
+<H3>Internal solution:</H3>
+<P>Microsoft recommends using IPSec for UDP 137. </P>
+<H3>Microsofts response:</H3>
+<P>I first sent a copy of NBName.cpp along with an extensive description of the 
+problems to secure@microsoft.com on June 20th. I have since learned that they 
+were notified about similar and same issues some time in March. They were very 
+responsive throughout the entire exchange, although their response throughout 
+has basically been "Thanks for the info, we're just about to release a patch". 
+</P>
+<P>On July 28th Microsoft released <A 
+href="http://www.microsoft.com/technet/security/bulletin/ms00-047.asp">this 
+bulletin</A> which provides a patch for Windows 2000. As of August 15th, the 
+Windows NT 4.0 patch info still reads: </P><PRE>Windows NT 4.0 Workstation, Server, and Server, Enterprise Edition: Patch to be released shortly. 
+Windows NT 4.0 Server, Terminal Server Edition: Patch to be released shortly. 
+</PRE>
+<P>Apparently Microsoft is having trouble "packaging" their NT 4.0 patch. 
+Interestingly, nowhere in the bulletin does it mention Windows 9x, even though 
+it is just as affected as any other platform using the NetBIOS protocol over 
+TCP/IP. I asked them why this was and their response was basically that anyone 
+concerned with "security" wouldn't be running Windows 9x anyawy. I would LOVE to 
+not have to run Windows 95 anymore, but I have several thousand dollars worth of 
+hardware and software (MP3 player that uses a propriatery parallel interface, 
+video capture cards that only have 9x drivers due to promised then abandoned 
+DirectX support for NT 4, Lego Mindstorm, tons of games etc!) that ONLY work 
+under 9x! Is this is a sign that Microsoft is preparing to abandon these 
+platforms? They sure do like Win2000... </P>
+<P>On August Second, there was this report: </P><PRE>Private Sector - (U) (CERT/CC, 2 August) The CERT/CC has issued Special
+Communication SC-2000.65 - NetBIOS, NBName, and the Cult of the Dead Cow
+(cDc).  As reported in yesterday’s NIPC Daily Report, a new tool
+exploiting several NetBIOS vulnerabilities has been released by a member
+of the cDc.  Source and binary has been posted to the Web site
+www.securityfocus.com.  Microsoft had previously released MS00-047 to
+help mitigate against the effects of being attacked via these
+vulnerabilities and suffering denial of NetBIOS services.  The CERT/CC
+has not received any reports of the tool being used at present to attack
+sites, but given the nature of the exposure surrounding past cDc tool
+releases, CERT/CC is preparing to publish some document to give people
+more information about the nature and scope of future activity involving
+NBName and exploitation of these vulnerabilities.
+</PRE>
+<P>On August 10th, <A href="http://www.cert.org/">CERT</A> published <A 
+href="http://www.kb.cert.org/vuls/id/32650">this Vulnerability Note</A> 
+which outlines the problem and basically reccomends to block the appropriate 
+ports, and install the patches that Microsoft has yet to provide, although it 
+does note: </P>
+<P>
+<H5>Note that no patch is being furnished for Win9x systems; Microsoft has 
+publically stated it feels patching these systems to disable name conflict 
+resolution would cause more problems than it would help prevent, especially in 
+networks with large numbers of Win9x systems. </H5>
+<P></P>
+<HR>
+
+<HR>
+
+<HR>
+<A name=nbname>
+<H3>NBNAME:</H3>
+<P>Check <A href="nbname/nbname.cpp">the source</A> for 
+current version and changes. 
+<P>NBName decodes and displays all NetBIOS name packets it receives on UDP port 
+137. Using the /DENY * command line option it will respond negatively to all 
+NetBIOS name registration packets it receives. Using the /CONFLICT command line 
+option it will send a name release request for each name that is not already in 
+conflict to machines it receives an adapter status response from. The /QUERY * 
+command line option causes a wildcard name query request to be broadcast at 
+startup and each machine that responds to the name query is sent an adapter 
+status request. The /ASTAT command line option causes an adapter status request 
+to be sent to the specified IP address, which doesn't have to be on your local 
+network. Using /QUERY * /CONFLICT /DENY * will disable your entire local NetBIOS 
+network and prevent machines from rejoining it. </P>
+<P>NBName is much more than just a NetBIOS DoS tool: </P><PRE>Usage: NBName  [/CONFLICT] [/REVERSE] [/NOLOCAL|/NOLOCALNET] [/ASTATBACK]
+        [/ASTAT TargetIP] [/SWEEP StartIP EndIP] [/SCAN IPList] [/SVCDESC]
+        [/TO ms] [/DELAY ms] [/PORT Port] [/RETRY Trys] [/QUERY Name]
+        [/LOCALIP LocalIP] [/NETMASK Netmask] [/EXAMPLES] [/ASOUT Outfile]
+        [/ALLOW|/DENY NameOrFile] [/RESPOND NameOrFile] [/RESPONDIP RespIP]
+        [/OUTSVC SvcNum OutFile] [/SPAWN SvcNum CmdExe "Args"]
+        [/DESTPORT Port] [/PROXYIP ProxyIP] [/PROXYPORT ProxyPort]
+        [/PROXYUSER Username] [/PROXYPASS Password] [/BCASTIP BcastIP]
+  /LOCALIP will bind to LocalIP instead of the default system IP
+  /NETMASK will use Netmask to determine local net addresses
+  /BCASTIP will use BcastIP as the destination for broadcast packets
+  /PORT will bind to Port instead of 137
+  /DESTPORT will send packets to Port instead of 137
+  /PROXYIP will use the SOCKS 5 proxy at address ProxyIP to route UDP packets
+  /PROXYPORT will connect to tcp port ProxyPort rather than 1080
+  /PROXYUSER and /PROXYPASS let you supply authentication info to the proxy
+  /QUERY will cause a name query for Name to be broadcast
+  /ASTAT will send an adapter status (astat) request to TargetIP
+  /ASTATBACK will send astat requests to nodes that respond to queries
+  /SWEEP will send adapter status requests to all IPs from StartIP to EndIP
+  /SCAN will send adapter status requests to first IP listed in on each
+     line of IPList
+  /DELAY will pause for ms milliseconds between each packet sent durring a
+     scan or sweep, default 100 ms (10 packets per second)
+  /REVERSE will send an astat request in response to astat requests
+  /ASOUT will output received adapter status responses' contents to Outfile
+  /OUTSVC will output machines that respond to an adapter status request
+     and have service SvcNum running to OutFile in the format of lmhosts
+  /SVCDESC will display a description of each known service in astat responses
+  /SPAWN will spawn CmdExe with the commandline: CmdExe Args SrvrIP SrvrName
+     when an astat response is received with service SvcNum running
+  /NOLOCAL will prevent packets from the local host from being processed
+  /NOLOCALNET will prevent packets from the local subnet from being processed
+  /TO causes NBName to exit if no packets are received for ms milliseconds
+  /RETRY changes the number of times failed packets are resent from 3 to Trys
+  /CONFLICT* will send name release packets for each name in the remote name
+     table of machines who respond to adapter status requests
+  /RESPOND* will respond to name queries for NameOrFile
+  /RESPONDIP will return RespIP for queries responded to if /RESPOND is
+     used with a name or wildcard.  Defaults to LocalIP
+  /DENY* will cause the name(s) specified by NameOrFile to be denied if a
+     node tries to register it (them)
+  /ALLOW* will deny all names _except_ NameOrFile
+     NameOrFile can be a single name, the path to a file containing a list of
+     names or * for all names (/ALLOW * is not valid).. Names can include a
+     service value by adding a backslash followed by the hex service value
+ *  These options may be damaging to network stability, use with caution!
+</PRE>
+<P>Using /SWEEP or /SCAN you can spew packets to blocks or lists of IPs, those 
+machines with NetBIOS name services running will respond with their adapter 
+status (including the contents of their name table). Using /OUTSVC you can have 
+discovered machines appended directly to an lmhosts file, and using /SPAWN as 
+well, you can use a <A href="nbname/donete.bat">batch 
+file</A> to run a program which gathers information from found NetBIOS servers 
+or audits them for open shares, dumb passwords etc (NAT)... Adapter status 
+request packets are 96 bytes, so using the /DELAY option you can tune NBName to 
+send packets as fast as the available bandwidth allows. If you send packets too 
+fast some of them will simply get lost and not reach their destination. The 
+default delay is 100 milliseconds or 10 packets per second, or 960 bytes per 
+second. a 128kb DSL or cablemodem connection can probably safely handle delays 
+as low as 10 ms, or 100 packets, or about 10k/s. At this speed you could scan an 
+entire class C (65k IPs) in about 11 minutes, having a NetBIOS auditor or other 
+program spawned in parallel each time a server is found. </P>
+<P>Listening on the default port 137 and using /REVERSE, when someone queries 
+your machine for NetBIOS adapter status it will display the request and respond 
+instead with a request for the querying machine's status. It is important to 
+realize that Windows machines will generate such a request AUTOMATICALLY if an 
+application on that computer calls gethostbyaddress() and is unable to resolve 
+an IP address's name via DNS, it will send an adapter status request directly to 
+the address attempting to retrieve the NetBIOS name... So just because a machine 
+requested your adapter status does not necessarily mean that they are trying to 
+hack you or running nbtstat.exe... this fact however can be quite useful in 
+detecting IDS systems on Windows machines by listening for NBNAME packets and 
+probing a machine from an IP address that does not resolve to a name via DNS, if 
+there is an IDS which is configured to immediately resolve the names of 
+attacking addresses, you will see an adapter status request after the DNS lookup 
+fails. </P>
+<P>One of the most common problems with WANs is locating the NetBIOS machines 
+that you can not send broadcast packets to (nodes on the far end of the WAN) if 
+there is not a WINS server in use. Microsoft's sollution is to add the machines 
+on the far end of the WAN to your lmhosts file which will be used to resolve a 
+name to its address before a broadcast query is broadcast, but this is a pain 
+for any large sized network, especially if IPs change at all. Using /OUTSVC in 
+combination with /SCAN or /SWEEP you can quickly and easily create an lmhosts 
+file. </P>
+<H3>Extended descriptions of some options:</H3>
+<H4>/PORT</H4>
+<P>In order to receive the normal broadcast traffic that NetBIOS nodes generate 
+you must be listening on the default port, 137. In Unix and Windows NT or 2000 
+boxes you may have to run NBName as root or Administrator. Also see the notes 
+for additional problems with binding. </P>
+<H4>/DESTPORT</H4>
+<P>Use this option to send packets to a port other than UDP 137. There are very 
+few circumstances in which this will be a useful option. </P>
+<H4>/PROXYIP /PROXYPORT /PROXYUSER and /PROXYPASS</H4>
+<P>To route the UDP trafic through a SOCKS 5 proxy, you can use these options to 
+specify the IP address of the proxy. All the other proxy options are optional. 
+Currently only plaintext authentication is supported. </P>
+<H4>/QUERY</H4>
+<P>This options causes a name query for the name provided to be broadcast. This 
+can be used to resolve a name to its owners address. /QUERY * will return cause 
+all the workstations to be resolved. </P>
+<H4>/ASTATBACK</H4>
+<P>This option will cause adapter status requests to be sent to any machine that 
+responds to a name query. Used in combination with /QUERY * this will cause an 
+adapter status request to be sent to every machine on the local network. Used in 
+combination with /QUERY * and /CONFLICT this will dissable every machine on the 
+local network that responds to the broadcast query. </P>
+<H4>/SWEEP</H4>
+<P>This option causes an adapter status request to be sent to a block of IPs. 
+You specify the starting address and the ending address, which need not be in 
+the same class C block. Using /DELAY you can control the speed at which these 
+packets are sent. </P>
+<H4>/SCAN</H4>
+<P>This option causes NBName to send adapter status requests to each of the IP 
+addresses listed in the file supplied. It will read the IP address from the 
+beginning of each line and ignore the rest, which means you can suply the files 
+created by /OUTSRVS or /OUTALL. You can use /DELAY to control the speed at which 
+packets are sent. </P>
+<H4>/REVERSE</H4>
+<P>When an adapter status request is received by NBName when this option is 
+used, instead of that system responding with its adapter statys, NBName will 
+send an adapter status back to port 137 on the machine that requested it. Using 
+this in combination with /ASOUT you can log the name table, IP and mac address 
+of people who request your adapter status. Using with /CONFLICT you can disable 
+the NetBIOS networking of anyone who requests your adapter status if they have 
+NetBIOS services running. Using it in combination with /SPAWN you can execute a 
+script or program that does something else when someone requests your adapter 
+status and has the server service running. It is probably a good idea to use 
+/NOLOCALNET and definately /NOLOCAL with this command. </P>
+<H4>/OUTSVC</H4>
+<P>This options cause NBName to append machines with the <A 
+href="nbname/nbsvcs.txt">service value</A> supplied to 
+a file with their IP address followed by the NetBIOS name associated with this 
+value, which is the same format as used by lmhosts files in both Unix (by Samba) 
+and Windows. In Win9x this file is located in the system32 directory, in NT and 
+2k it is in %windir%\system32\drivers\etc. NBName will always append to these 
+files, but will not check if a machine with that IP or machine name already 
+exists. If you want to use NBName to spawn a program that accesses the machine 
+by its name and you are bound to the default port you will have to use one of 
+these options to update the system lmhosts file. You will not be able to use 
+\\123.321.123.432 to access the machine because Windows actually sends an 
+adapter status request to the machine to get its machine name automagically for 
+you and if NBName is listening on port 137 the system will not be able to 
+retrieve the machine name. </P>
+<H4>/SPAWN</H4>
+<P>This option can be used to spawn another script or program when a machine 
+with the <A href="nbname/nbsvcs.txt">service value</A> 
+supplied responds to an adapter status request. You must suply at least one 
+"argument" or paramater to pass to the program although the program or script 
+obviously doesn't have to use it. The second paramater passed to the script or 
+program is the IP address of the responding machine, and the third is the 
+NetBIOS name the server is using. The program is spawned is parallel and NBName 
+continues to run. </P>
+<H4>/NOLOCAL and /NOLOCALNET</H4>
+<P>If you are working with remote machines it is probably a good idea to use the 
+/NOLOCALNET option. Machines on your "local network" are determined using the 
+netmask, which can be provided using /NETMASK. /NOLOCAL will cause packets 
+generated from the IP NBName is listening on to be ignored and not processed. 
+</P>
+<H4>/CONFLICT</H4>
+<P>When a NetBIOS node receives a name release packet (which is basically saying 
+"OK I'm done using this name") for a name that it has registered, it marks that 
+name as being in conflict and stops using it. When an adapter status response is 
+received by NBName and this option is used, it will send a name release packet 
+for each name that is not already in conflict to that node, essentially 
+disabling the NetBIOS networking on that node. The machine will probably have to 
+be rebooted to operate properly again. </P>
+<H4>/RESPOND</H4>
+<P>This option allows you to answer to received name queries. You can respond to 
+all names using * or a specific list of names by a name or filename containing 
+the list. This will cause your IP address, or the IP address specified with 
+/RESPONDIP, to be returned when someone on your network attempts to use a 
+machine name that doesn't resolve via DNS (this will happen to non-NetBIOS 
+related applications also as the system automatically tries to resolve names by 
+hosts then lmhosts then DNS then WINS) and that machine will in turn probably 
+try to connect to the returned address instead of whatever address the other 
+machine was trying to connect to. It may also be able to respond faster than the 
+node that actually owns the name if it is an actual name that is in use. If a 
+filename is provided it can either be a straight list of names to be responded 
+to with RespIP or LocalIP or it can be an lmhosts style file, IP address then 
+name on each line. </P>
+<H4>/ALLOW and /DENY</H4>
+<P>These options let you deny name registration requests so that NetBIOS nodes 
+will think that their machine name is already in use on the network and not be 
+able to function. You can deny all names using /DENY * or suply a specific name 
+or list of names to deny, or you can deny all names except a specific name or 
+list of names using /ALLOW. </P>
+<H3>Notes:</H3>
+<P>NBName should compile on Win32 and Unix platforms, but will not be able to 
+run on Win2k if NetBIOS is already bound to the IP interface being used. This is 
+because Microsoft created a new socket flag which prevents other applications 
+from re-binding in front of the socket. This flag was implemented in NT 4.0 SP4 
+but apparently not used except in Win2k. </P>
+<P>While you can bind to any port using the /PORT command (except as noted 
+above), old Win95 boxes (pre-OSR2) will always respond to UDP 137. This means 
+that unless you use the default port you will not see the responses from those 
+machines. However, this method can also be used to locate pre-osr2 win95 
+machines which may be vulnerable to a few known exploits. </P>
+<P>Many Unix platforms seem to have issues receiving broadcast UDP packets. This 
+may prevent the many options from working as NBName will not be able to receive 
+the normal NetBIOS traffic, options like /ALLOW /DENY /RESPOND.. Obviously you 
+must be listening on the default port (137) for these options to work. </P>
+<P>On my NT box after binding in front of the system to UDP 137 I have 
+repeatedly seen it bind without error but then never receive the packets 
+destined for that port. It seems to fix itself most of the time. Using the /PORT 
+option you can bind to other ports (which may also allow you to get UDP packets 
+through a firewall by binding to a "trusted" port such as 53) and MOST Windows 
+machines will respond to that port, but some old Win95 boxes will always respond 
+to UDP 137 no matter the source port. </P>
+<P>There may be some issues related to the end node types which may cause NBName 
+to function improperly on networks that do not use B-nodes. </P>
+<P>Using /REVERSE without /NOLOCAL(NET) may cause NBName to send packets to 
+itself as fast as it can. That would be a bad thing. </P>
+<P>Names, either supplied with the option or in the filename, can include a <A 
+href="nbname/nbsvcs.txt">service value</A> by appending 
+a backslash (\) followed by the hex service value (such as SERVER\20). If no 
+service value is supplied, 00 is used (workstation service). The most commonly 
+used service values are 00 (workstation) and 20 (server). </P>
+<P>Names with spaces in them can be specified on the command line by putting 
+quotes around the name, such as NBName /QUERY "THE NAME" ...and may even include 
+a service value like NBName /DENY "THE NAME\20" </P>
+<HR>
+
+<HR>
+
+<P><A href="nbname/nbname.cpp">Get SOURCE here</A></P>
+<HR>
+
+<P><A href="http://www.cultdeadcow.com/tools/nbname/nbname.exe">Get BINARY here</A></P>
+<HR>
+
+<HR>
+
+<P><A href="nbname/donete.bat">Here</A> is an example 
+batch file which you might execute with the /SPAWN option. It uses <A 
+href="nete.html">NetE</A> to extract 
+information from found machines and writes a log to c:\logs\ for each NetBIOS 
+server that can be connected to. A sample commandline for using this batch file 
+might be:</P><PRE>NBName /NOLOCALNET /SWEEP 123.231.123.1 123.231.129.255 /DELAY 25 /TO 20000
+   /OUTSVC 20 %windir%\system32\drivers\etc\lmhosts /SPAWN 20 donete.bat TestSweep1 
+</PRE>
+<P>The above commandline would sweep 7 class C networks sending 40 packets per 
+second, exiting automatically after 20 seconds of not having received any 
+responses, appending machines with the server service running to the system 
+lmhosts file, spawning donete.bat for each server found which will create a file 
+for each machine that could be connected to with names in this format: </P><PRE>TestSweep1-123.231.123.99-HOST1
+TestSweep1-123.231.126.123-HOST2
+... etc
+</PRE>
+</BODY></HTML>

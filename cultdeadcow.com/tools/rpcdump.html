@@ -1,0 +1,267 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Remote Procedure Call</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR></HEAD>
+<BODY text=#ffffff vLink=#cc0000 aLink=#ff0000 link=#ff0000 
+bgColor=#000000>
+<BR><BR>
+<P>A commonly overlooked area of security is Remote Procedure Call, possibly 
+because most people don't understand anything about it. RPCDUMP is a program 
+which provides console access to the RPC APIs in Windows. To use it, some base 
+understanding of the different pieces necessary to create an RPC connection is 
+required. Microsoft provides plenty of information about RPC. </P><PRE>c:\&gt;rpcdump -?
+rpcdump v0.92 - Questions, comments, bitches, and bugs to sd@cultdeadcow.com
+rpcdump [options] commands
+commands: STAT - Get stats  AUTH - Authenticate IAUTH - Inquire auth info 
+   STOP - Stop server listening  NAME - Get principle name  VECS - Get vectors
+   ENUM - Enumerate endpoints
+options: [-p protocol] [-u UUID] [-n netadr] [-e endpoint] [-o options]
+         [-s user] [-a password] [-d domain] [-i server principal name]
+         [-v auth service] [-l auth level] (used with AUTH)
+Valid protocols and their endpoints are:
+ncacn_nb_tcp*  - Connection-oriented NetBIOS over TCP     - 0-255
+ncacn_nb_ipx*  - Connection-oriented NetBIOS over IPX     - 0-255
+ncacn_nb_nb    - Connection-oriented NetBIOS over NetBEUI - 0-255
+ncacn_ip_tcp   - Connection-oriented TCP/IP (default)     - Port#
+ncacn_np@      - Connection-oriented named pipes          - \\pipe\pipename
+ncacn_spx      - Connection-oriented SPX                  - 1-65535
+ncacn_vns_spp* - Vines SPP transport                      - Port# 250-511
+ncadg_ip_udp*@ - Datagram (connectionless) UDP/IP         - Port#
+ncadg_ipx*@    - Datagram (connectionless) IPX            - 1-65535
+ncalrpc@       - Local procedure call                     - App/Service name
+  (* May only be available under NT)
+  (@ The 'Security' option is available, but only under NT)
+The netadr for different protocols is specified as:
+For _nb_ protocols - Windows machine name           - myserver
+For _ip_ protocols - IP address or host name        - 12.34.56.78  hostname
+For _np protocol   - NT server name (\\ optional)   - myhost  \\somehost
+For _spx/_ipx prot - IPX inet adr or NT server name - ~0000000108002B30612C
+For _vns_ protocol - StreetTalk name item@group@org - print@docs@cdc
+For ncalrpc        - Machine name                   - mymachine
+The Security option is specified in the form:
+Security=id type bool
+Values for id:
+Anonymous      - The client is anonymous to the server
+Identification - The server has information about client but cannot impersonate
+Impersonation  - The server is the client on the client’s behalf
+Values for type:
+Dynamic - A pointer to the security token is maintained.
+Static  - Security settings associated with the endpoint represent a copy 
+         of the security information at the time the endpoint was created.
+         The settings do not change. 
+Values for bool:
+True  - Effective = TRUE; only Windows NT security settings set to ON are
+        included in the token. 
+False - Effective = FALSE; all Windows NT security settings, including those
+        set to OFF, are included in the token.
+
+</PRE>
+<P>The minimum info necessary to perform something like ENUM (enumerate remote 
+endpoints) is a network address, the format of which depends on the protocol you 
+are using. The default protocol is ncacn_ip_tcp, a tcp connection to a port 
+(default 135), the address of which would be the machine name or ip address. 
+Your rpc system may support even more protocols than are listed in the help. 
+</P>
+<P>The information produced by rpcdump may or may not actually be useful. One 
+thing missing is the ability to actually connect to the endpoints and exchange 
+data. Doing this usually requires knowing all the information about the endpoint 
+at compile time, and I'm looking at ways to do this dynamically. However, just 
+with the functionality included, many servers (especially web servers on the 
+internet) dump a ton of information, often including all the virtual IPs that 
+server is handling. </P>
+<HR>
+<A href="rpcdump.c">Get source here.</A> 
+<HR>
+
+<P>Here is some more information about the specific pieces that make up an rpc 
+connection. Much of this text is copyrighted by <A 
+href="http://msdn.microsoft.com/">Microsoft</A>: </P><PRE>Protocol Sequence
+
+Specifies a character string that represents a valid combination of an RPC protocol (such as "ncacn"), 
+a transport protocol (such as "tcp"), and a network protocol (such as "ip"). 
+Microsoft RPC supports the following protocol sequences:
+
+Protocol sequence		Description				Supporting Platforms
+ncacn_nb_tcp		Connection-oriented NetBIOS over TCP		client only: MS-DOS, Windows 3.x
+									client and server: Windows NT
+ncacn_nb_ipx		Connection-oriented NetBIOS over IPX		client only: MS-DOS, Windows 3.x
+									client and server: Windows NT
+ncacn_nb_nb		Connection-oriented NetBEUI			client only: MS-DOS, Windows 3.x
+									client and server: Windows NT, Windows 95
+ncacn_ip_tcp		Connection-oriented TCP/IP			client only: MS-DOS,Windows 3.x, and Apple Macintosh
+									client and server: Windows 95 and Windows NT
+ncacn_np		Connection-oriented named pipes			client only: MS-DOS, Windows 3.x, Windows 95
+									client and server: Windows NT
+ncacn_spx		Connection-oriented SPX				client only: MS-DOS, Windows 3.x
+									client and server: Windows NT, Windows 95
+ncacn_dnet_nsp		Connection-oriented DECnet transport		client only: MS-DOS, Windows 3.x
+ncacn_at_dsp		AppleTalk DSP					client: Apple Macintosh
+									server: Windows NT
+ncacn_vns_spp		Connection-oriented Vines SPP transport		client only: MS-DOS, Windows 3.x
+									client and server: Windows NT
+ncadg_ip_udp		Datagram (connectionless) UDP/IP		client only: MS-DOS, Windows 3.x
+									client and server: Windows NT
+ncadg_ipx		Datagram (connectionless) IPX			client only: MS-DOS, Windows 3.x
+									client and server: Windows NT
+ncalrpc			Local procedure call				client and server: Windows NT and Windows 95
+
+NetworkAddress
+
+Specifies the network address of the system to receive remote procedure calls. 
+The format and content of the network address depend on the specified protocol sequence as follows:
+
+Protocol sequence	Network address					Examples
+ncacn_nb_tcp		Windows NT machine name				myserver
+ncacn_nb_ipx		Windows NT machine name				myserver
+ncacn_nb_nb		Windows NT or Windows 95 machine name		myserver
+ncacn_ip_tcp		four-octet internet address, or host name	128.10.2.30
+									anynode.microsoft.com
+ncacn_np		Windows NT server name 				\\myotherserver
+			(leading double backslashes are optional)	myserver 
+ncacn_spx		IPX internet address, or Windows NT server name	~0000000108002B30612C
+									myserver	
+ncacn_dnet_nsp 		Area and node syntax				4.120
+ncacn_at_dsp		Windows NT machine name, optionally followed by servername@zonename
+			@ and the AppleTalk zone name. Defaults to @*, 	servername
+			the client’s zone, if no zone provided										
+ncacn_vns_spp		StreetTalk server name of the form 		printserver@sdkdocs@microsoft
+			item@group@organization	
+ncadg_ip_udp		four-octet internet address, or host name	128.10.2.30
+									anynode.microsoft.com
+ncadg_ipx		IPX internet address, or Windows NT server name	~0000000108002B30612C
+									myserver
+ncalrpc			Machine name 					thismachine
+
+The network-address field is optional. When you do not specify a network address, 
+the string binding refers to your local host. It is possible to specify the name of 
+the local machine when you use the ncalrpc protocol sequence, however doing so is 
+completely unnecessary.
+
+Endpoint
+
+Specifies the endpoint, or address, of the process to receive remote procedure calls. 
+An endpoint can be preceded by the keyword endpoint=. Specifying the endpoint is optional 
+if the server has registered its bindings with the endpoint mapper. See RpcEpRegister.
+The format and content of an endpoint depend on the specified protocol sequence as shown 
+in the Endpoint/Option Table, below.
+
+Option
+
+Specifies protocol-specific options.. The option field is not required. Each option is specified 
+by a {name, value} pair that uses the syntax option name=option value. Options are defined for 
+each protocol sequence as shown in the Endpoint/Option Table, below.
+
+Protocol sequence	Endpoint			Examples		Option name
+ncacn_nb_tcp		Integer between 0 and 255. 	100			None
+			Many values between 0 and 32 
+			are reserved by Microsoft.	
+ncacn_nb_ipx		(as above)			(as above)		None
+ncacn_nb_nb		(as above)			(as above)		None
+ncacn_ip_tcp		Internet port number		1025			None
+ncacn_np		Windows NT named pipe. 		\\pipe\\pipename	Security 
+			Name must start with "\\pipe".				(NT only)
+ncacn_spx		Integer between 1 and 65535.	5000			None
+ncacn_dnet_nsp		DECnet phase IV object number 	mailserver		None
+			(must be preceded by the # 	#17	
+			character), or object name	
+ncacn_at_dsp		A character string, 		myservicesendpoint	None
+			up to 22 bytes long 	
+ncacn_vns_spp		Vines SPP port number 		500			None
+			between 250 and 511
+ncadg_ip_udp		Internet port number		1025			Security (32-bit only)
+ncadg_ipx		Integer between 1 and 65535.	5000			Security (32-bit only)
+ncalrpc			String specifying application 	my_printer		Security 
+			or service name. The string 				(NT only)
+			cannot include any backslash 
+			characters.	
+
+The Security option name, supported for the ncalrpc, ncacn_np, ncadg_ip_udp, and ncadg_ipx protocol sequences, takes the following option values:
+
+Option name	Option value
+Security	{identification | anonymous | impersonation} {dynamic | static} {true | false}
+If the Security option name is specified, one entry from each of the sets of Security option values must also be supplied. The option values must be separated by a single-space character. For example, the following Option fields are valid:
+
+Security=identification dynamic true
+Security=impersonation static true
+ 
+
+The Security option values have the following meanings:
+
+Security option value	Description
+Anonymous		The client is anonymous to the server.
+Dynamic			A pointer to the security token is maintained. Security settings represent 
+			current settings and include changes made after the endpoint was created.
+False			Effective = FALSE; all Windows NT security settings, including those set 
+			to OFF, are included in the token.
+Identification		The server has information about client but cannot impersonate.
+Impersonation		The server is the client on the client’s behalf.
+Static			Security settings associated with the endpoint represent a copy of the security 
+			information at the time the endpoint was created. The settings do not change. 
+True			Effective = TRUE; only Windows NT security settings set to ON are included 
+			in the token. 
+
+For more information about Microsoft Windows NT security options, 
+see your Microsoft Windows NT programming documentation.
+
+Remarks
+
+The string binding is an unsigned character string composed of strings that represent the 
+binding object UUID, the RPC protocol sequence, the network address, and the endpoint and 
+endpoint options. White space is not allowed in string bindings except where required by 
+the Option syntax. 
+
+Default settings for the NetworkAddress, Endpoint, and Option fields vary according to 
+the value of the ProtocolSequence field.
+
+For all string-binding fields, a single backslash character (\) is interpreted as an 
+escape character. To specify a single literal backslash character, you must supply two 
+backslash characters (\\).
+
+The following are examples of valid string bindings. In these examples, obj-uuid is 
+used for convenience to represent a valid UUID in string form. Instead of showing 
+the UUID 308FB580-1EB2-11CA-923B-08002B1075A7, the examples show obj-uuid.
+
+obj-uuid@ncacn_ip_tcp:16.20.16.27[2001]
+obj-uuid@ncacn_ip_tcp:16.20.16.27[endpoint=2001]
+obj-uuid@ncacn_nb_nb:
+obj-uuid@ncacn_nb_nb:[100]
+obj-uuid@ncacn_np:
+obj-uuid@ncacn_np:[\\pipe\\p3,Security=impersonation static true]
+obj-uuid@ncacn_np:\\\\marketing[\\pipe\\p2\\p3\\p4]
+obj-uuid@ncacn_np:\\\\marketing[endpoint=\\pipe\\p2\\p3\\p4]
+obj-uuid@ncacn_np:\\\\sales
+obj-uuid@ncacn_np:\\\\sales[\\pipe\\p1,Security=identification dynamic true]
+obj-uuid@ncalrpc:
+obj-uuid@ncalrpc:[object1_name_demonstrating_that_these_can_be_lengthy]
+obj-uuid@ncalrpc:[object2_name,Security=anonymous static true]
+obj-uuid@ncacn_vns_spp:server@group@org[500]
+obj-uuid@ncacn_dnet_nsp:took[elf_server]
+obj-uuid@ncacn_dnet_nsp:took[endpoint=elf_server]
+obj-uuid@ncadg_ip_udp:128.10.2.30
+obj-uuid@ncadg_ip_udp:maryos.microsoft.com[1025]
+obj-uuid@ncadg_ipx: ~0000000108002B30612C[5000]
+obj-uuid@ncadg_ipx:printserver
+obj-uuid@ncacn_spx:annaw[4390]
+obj-uuid@ncacn_spx:~0000000108002B30612C
+ 
+
+A string binding contains the character representation of a binding handle and sometimes 
+portions of a binding handle. String bindings are convenient for representing portions 
+of a binding handle, but they can’t be used for making remote procedure calls. They must 
+first be converted to a binding handle by calling the RpcBindingFromStringBinding routine.
+
+Additionally, a string binding does not contain all of the information from a binding 
+handle. For example, the authentication information, if any, associated with a binding 
+handle is not translated into the string binding returned by calling the 
+RpcBindingToStringBinding routine.
+
+During the development of a distributed application, servers can communicate their 
+binding information to clients using string bindings to establish a client-server 
+relationship without using the endpoint-map database or name-service database. To 
+establish such a relationship, use the function RpcBindingToStringBinding to convert 
+one or more binding handles from a binding-handle vector to a string binding, and 
+provide the string binding to the client.
+
+</PRE>
+</BODY></HTML>

@@ -1,0 +1,38 @@
+
+Name                Number(h)  Type  Usage
+<computername>         00       U    Workstation Service
+<computername>         01       U    Messenger Service
+<\\--__MSBROWSE__>     01       G    Master Browser
+<computername>         03       U    Messenger Service
+<computername>         06       U    RAS Server Service
+<computername>         1F       U    NetDDE Service
+<computername>         20       U    File Server Service
+<computername>         21       U    RAS Client Service
+<computername>         22       U    Microsoft Exchange Interchange(MSMail Connector)
+<computername>         23       U    Microsoft Exchange Store
+<computername>         24       U    Microsoft Exchange Directory
+<computername>         30       U    Modem Sharing Server Service
+<computername>         31       U    Modem Sharing Client Service
+<computername>         43       U    SMS Clients Remote Control
+<computername>         44       U    SMS Administrators Remote Control Tool
+<computername>         45       U    SMS Clients Remote Chat
+<computername>         46       U    SMS Clients Remote Transfer
+<computername>         4C       U    DEC Pathworks TCPIP service on Windows NT
+<computername>         52       U    DEC Pathworks TCPIP service on Windows NT
+<computername>         87       U    Microsoft Exchange MTA
+<computername>         6A       U    Microsoft Exchange IMC
+<computername>         BE       U    Network Monitor Agent
+<computername>         BF       U    Network Monitor Application
+<username>             03       U    Messenger Service
+<domain>               00       G    Domain Name
+<domain>               1B       U    Domain Master Browser
+<domain>               1C       G    Domain Controllers
+<domain>               1D       U    Master Browser
+<domain>               1E       G    Browser Service Elections
+<INet~Services>        1C       G    IIS
+<IS~computer name>     00       U    IIS
+<computername>         [2B]     U    Lotus Notes Server Service
+IRISMULTICAST          [2F]     G    Lotus Notes
+IRISNAMESERVER         [33]     G    Lotus Notes
+Forte_$ND800ZA         [20]     U    DCA IrmaLan Gateway Server Service
+
