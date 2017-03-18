@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>What do we have?</title>
+</head>
+
+<body bgcolor=#000000 text=#FFFFFF link=#FF7F7F alink=#FFBFBF vlink=#FF3F3F>
+
+<blockquote>
+
+<font size=+3>The Good And The Bad</font><p>
+
+
+When that crash occurs, and you hit 'close', you'll notice that Netmeeting
+itself does not close. This means that RUNDLL32 is being launched in a
+separate process space. This is both good, and bad. The good side is that 
+you don't have a lot of complicated code to wade through and whatever you do,
+it won't look too suspicious, because Netmeeting didn't close. The bad side is
+that RUNDLL32 doesn't load too much in the way of DLL's or external resources.
+It looks like we'll have to load those on our own.<p>
+
+Upon further inspection, we have even more shit to deal with. An executable,
+such as RUNDLL32.exe has a base address of 0x00400000. This means that almost
+all references to the stack are going to have at least one NULL character in 
+them. This is unfortunate, because it is almost always runaway string 
+operations in C that cause these kind of overflow problems. Hence, if we 
+write our code with null characters, we will harm our own exploit string 
+because it will be truncated as it is manipulated. Other bad characters 
+include line feed, carriage returns, some control codes, and in some 
+extreme cases, even lowercase or uppercase letters, or characters whose ASCII
+value is greater &gt;= 0x80 (one of the worst cases!) We're just going to have
+to be clever.<p>
+
+Other things we have to work with: MSCONF.DLL is loaded. This is because RUNDLL
+loaded it. We notice this because the command line for starting .CNF files is
+"<tt>rundll32.exe msconf.dll,OpenConfLink %l</tt>" as defined in the CNF file
+type. We can also assume that KERNEL32.DLL is loaded because KERNEL32 functions
+are listed in RUNDLL32's import table. Then again, KERNEL32 functions are
+also listed in the MSCONF.DLL import table. Lets look to see what would be 
+more reliable: We're hacking Netmeeting 2.1. One version of the product. One
+version of MSCONF.DLL. There could be any version or revision of RUNDLL32 or
+KERNEL32 loaded from various OS versions or upgrades. Hence, if we were to
+reference an absolute virtual memory address, it had better be within MSCONF
+or else, we might be poking into the wrong places (version skew!). This is
+problematic, assuming that we want this exploit to work on all versions of the
+target OS.<p>
+
+So... we look at how other programs get their addresses. We want to be able
+to use internet functions to do fun stuff with our exploit code, so we are
+going to need to use WSOCK32.DLL or WININET.DLL. WinInet provides more
+functionality with less code, so we'll go with that for now. WININET is not
+loaded into the process space of RUNDLL32, so we'd have to load it. But wait!
+We haven't mentioned how to gain control of the EIP and point it to our
+code yet! So we shall... <p>
+
+</blockquote>
+
+<center>
+<a href="page6.html"><font size=+1>Snatch that EIP!</font></a><p>
+<a href="page4.html"><font size=+1>Back up!</font></a><p>
+</center>
+
+
+</body>
+
+</html>

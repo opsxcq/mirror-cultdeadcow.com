@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Hackin' it Up</title>
+</head>
+
+<body bgcolor=#000000 text=#FFFFFF link=#FF7F7F alink=#FFBFBF vlink=#FF3F3F>
+
+<blockquote>
+
+<font size=+3>How Can This Be Used?</font><p>
+
+Now we need to figure out what's really going on. To create the buffer
+overflow situation, I created a file called "overflow.cnf". CNF is a file
+format used by Microsoft Netmeeting when you save a 'SpeedDial' shortcut to 
+disk. CNF files are commonly placed on people's webpages and in emails so that
+people on netmeeting will give them a call. <p>
+
+If you wanted to exploit this overflow, you could simply start up Netmeeting,
+find a bunch of people on the ILS server, and send them email with the CNF 
+file attached. Just make the mail say something like: <i>My girlfriend and I 
+want you to watch us fuck while you spank it! Call us soon, we're horny!</i> 
+They'll click the icon. It may also be possible to fake a connection to an ILS
+server as well, creating a fake user and supplying the bogus address line with
+our exploit it in, so that if they click on the name, they get zapped. All 
+kinds of fun owning the machines of horny men looking for titties on the 
+net!<p>
+
+So. Let's do it! What do we have at our disposal? Well, the overflow is in
+'RUNDLL32.EXE', which is of different sizes between Windows 95 and Windows NT.
+It's a safe bet to assume that they have different import tables (go ahead
+and verify that yourself with DUMPBIN). Oh, by the way, this particular
+overflow will only happen in Windows 95, but the exploit technology is valid
+for Windows NT as well. Netmeeting 2.1 was the version, by the way.<p>
+
+</blockquote>
+
+<center>
+<a href="page5.html"><font size=+1>Onward!</font></a><p>
+<a href="page3.html"><font size=+1>Backward!</font></a><p>
+</center>
+
+
+</body>
+
+</html>

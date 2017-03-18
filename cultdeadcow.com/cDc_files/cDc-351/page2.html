@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>Fundamentals</title>
+</head>
+
+<body bgcolor=#000000 text=#FFFFFF link=#FF7F7F alink=#FFBFBF vlink=#FF3F3F>
+
+<blockquote>
+
+<font size=+3>Fundamentals</font><p>
+
+A buffer overflow occurs when something very large is placed in a box far
+too small for it to fit. It's all gotta go somewhere.
+
+An example in code is as follows:
+
+<pre><a name=code>
+void func(void)
+{
+   int i;
+   char buffer[256];   
+                                  // *
+   for(i=0;i<512;i++)                 
+      buffer[i]='A';              // !
+   
+   return;
+}
+</pre>
+
+As you can see, our 'buffer' gets filled with 256 'A's, followed by 256 more that just don't fit. The rest of those 'A's have to go somewhere.<p>
+
+And where they go depends on your operating system implementation and
+programming language, but if you don't have automatic bounds checking like
+Java, I guarantee you that those 'A's are going somewhere unfortunate.<p>
+
+Here is a picture of a healthy 32-bit <i>stack</i>, in such an operating 
+system as Windows 9x/NT running on an Intel platform. It looks like what it
+should look like at the point marked <a href="page2.html#code"><b>*</b></a> in the code above. 
+
+<pre>
+STACK 
+        ----------------
+        Local Variables
+ESP->   i
+        Buffer
+        ----------------
+EBP->   Old Value of EBP
+        ----------------
+        Return Address
+        ----------------
+</pre>
+
+When the "func" procedure returns, it moves EBP back into ESP, and POP's the
+return address off the stack. When the above line of code marked
+'<a href="page2.html#code">!</a>' executes it overflows the buffer, writing 'A's over 
+the old value of EBP and over the return address. By overwriting the 
+return address, you can seriously alter the course of program flow. All 
+you have to do is change the return address to point to a memory location 
+of your choice, and the code you want to execute will be reached when 
+this procedure decides to 'return'. If you stuff the buffer with code 
+bytes, you can then reroute the EIP to them on the next RET, since the stack
+is considered executable memory in Windows 9x/NT on the Intel architecture.
+<p>
+
+The lesson on basics is over. If you have written a buffer overflow exploit
+on other operating systems or have fully mastered these basic concepts, we
+will go into detail on how to recognize the buffer overflow condition in
+Windows and proceed to detail on exploitation.<p>
+
+</blockquote>
+
+<center>
+<a href="page3.html"><font size=+1>Next</font></a><p>
+<a href="page1.html"><font size=+1>Back</font></a><p>
+</center>
+
+
+</body>
+
+</html>
+

@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>Exploit!</title>
+</head>
+
+<body bgcolor=#000000 text=#FFFFFF link=#FF7F7F alink=#FFBFBF vlink=#FF3F3F>
+
+<blockquote>
+
+<font size=+3>Constructing the Exploit</font><p>
+
+We are now in control of the machine. We need to do something useful now, but
+we are limited on how long we can make our code. You'll notice that after
+about 763 characters, that we end up crashing in a different place. This is
+also an overflow, a different one. So Microsoft really has two bugs to fix,
+but hey, we're only exploiting one right now. If we have time, we'll get back
+to the other.<p>
+
+The first 256 characters get blown away so our code only has about 500 bytes
+of room in which to fit. Here's what we have to deal with:<p>
+<ul>
+<li>500 byte maximum exploit length
+<li>We don't know what OS version we're running
+<li>We don't know where any useful functions are located
+</ul>
+This kinda sucks, but let's look at this from a non-exploit point of view.
+If I was a little executable, compiled for Windows, I would run on both Win95
+and WinNT. If I want to call ExitProcess, how do I know where the function is?
+It's in two different locations in Kernel32.DLL between the two OS's. (and
+in two different places between OSR1 and OSR2 of W95, and various service
+pack releases of WinNT, for that matter). I can't just jump to a random
+address.<p>
+
+I have to be <b>told</b> the location of these functions. There is a function
+in the Win32 API called "GetProcAddress". It returns the memory address of 
+a function, given it's name and it's module handle. So what's the address
+of GetProcAddress? We don't know! We would have to call it to find out! So how
+does it work? Import tables.<p>
+
+Import tables are structures in the PE-Executable format that specify that the
+operating system should tell us the location of certain functions and fill 
+in a table with the values. Use DUMPBIN to get the import table. Both DLLs and
+EXEs have import tables. We know that MSCONF.DLL is in memory, and that since
+we're only dealing with one version of MSCONF.DLL, if GetProcAddress was in
+it's import table, then the address for GetProcAddress was written to a fixed
+location in MSCONF.DLL's table space by the operating system when it was
+loaded.<p>
+
+So we dump it:<p>
+<pre>
+Microsoft (R) COFF Binary File Dumper Version 5.10.7303
+Copyright (C) Microsoft Corp 1992-1997. All rights reserved.
+
+
+Dump of file msconf.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    KERNEL32.dll
+
+                 23F   Sleep
+                 183   IsBadReadPtr
+                 17E   InterlockedIncrement
+                 .
+                 .
+                 .
+                  1E   CompareStringA
+                  98   FreeLibrary
+                 116   <font color=#C0FFFF>GetProcAddress</font>
+                 190   <font color=#FFC0FF>LoadLibraryA</font>
+                  4C   DeleteCriticalSection
+                  51   DisableThreadLibraryCalls
+                 .
+                 .
+                 .
+</pre>
+And there we are! <tt>GetProcAddress</tt>, and <tt>LoadLibraryA</tt>! <tt>LoadLibrary</tt> can be used
+to get module handles of DLLs that are loaded, and to load DLLs that aren't
+loaded. It basically returns the DLL base address. This is important because
+the base address of the <tt>KERNEL32.DLL</tt> differs between NT and 95.<p>
+
+So we pop into our debugger and search through memory until we find the 
+address of the functions. They appear at <tt>0x6A60107C (LoadLibraryA)</tt>,
+and <tt>0x6A601078 (GetProcAddress)</tt>. We just need to call these locations 
+using an indirection (<tt>call dword ptr [0x6A60107C]</tt>) and we'll go to the
+right places.<p>
+
+In order to be efficient, we are going to build our exploit in two parts:
+<ul>
+<li>Build a jumptable of the functions we intend to use, and
+<li>Run our code with reference to our own jumptable.
+</ul> 
+This reduces the amount of code required to call a function when necessary,
+and minimizes stack usage to save registers. This is important, because if
+we <tt>PUSH</tt> or <tt>POP</tt> too much, we might blow away our code or cause other stack 
+problems.
+
+In order to build this jumptable though, we'll need to know ahead of time
+what Win32 functions we'll be calling. So lets figure out what we want to do.
+500 bytes is far too small for a really useful Windows program, so instead,
+we'll make our little <i>egg</i> code download another program off of the 
+internet, a larger, well constructed executable, and execute it. This will
+enable us to write this little tedious chunk once, and have it execute a piece
+of higher level code.<p>
+
+To download a URL, we'll need <tt>InternetOpenA</tt>, 
+<tt>InternetCloseHandle</tt>, <tt>InternetOpenUrlA</tt>, and 
+<tt>InternetReadFile</tt> from <tt>WININET.DLL</tt>. We'll also need
+<tt>_lcreat</tt>,<tt> _lwrite</tt>, and <tt>_lclose</tt> from 
+<tt>KERNEL32.DLL</tt> to write the file to disk once downloaded. We'll need 
+<tt>GlobalAlloc</tt> from <tt>KERNEL32.DLL</tt> to allocate memory for what 
+we're downloading. We'll also want <tt>WinExec</tt> and <tt>ExitProcess</tt> 
+(also in <tt>KERNEL32.DLL</tt>) to execute what we've downloaded, and kill the
+<tt>RUNDLL32</tt> process that we so thoroughly corrupted (before it can make 
+a sound).<p>
+
+Note that in a regular Win32 program, you would never call <tt>_lcreat</tt>,
+or any of the other obsolete functions. However, they exist in Win95 and NT,
+and they have far simpler calling syntax than <tt>CreateFile</tt> and friends.
+So we'll use 'em.<p>
+
+</blockquote>
+
+<center>
+<a href="page8.html"><font size=+1>Show me the code!</font></a><p>
+<a href="page6.html"><font size=+1>What's an EIP again?</font></a><p>
+</center>
+
+
+</body>
+
+</html>

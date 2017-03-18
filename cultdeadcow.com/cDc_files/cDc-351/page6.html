@@ -1,0 +1,96 @@
+<html>
+<head>
+<title>What do we have?</title>
+</head>
+
+<body bgcolor=#000000 text=#FFFFFF link=#FF7F7F alink=#FFBFBF vlink=#FF3F3F>
+
+<blockquote>
+
+<font size=+3>Snatching the EIP</font><p>
+
+So we found that through a buffer overflow of the right length, we could
+modify the return address of some function and jump to code of our choice.
+It would seem natural then, for us to do something like the following:<p>
+<pre>
+Address=.....256periods....1234xyz
+</pre>
+
+Since the buffer size is 256 bytes (we figure that out by experimentation,
+slowly growing and shrinking the address= line length until we home in on the
+exact number of characters that cause it to crash) the above string will
+fill the buffer with 256 periods, overwrite EBP with 0x34333231 and set
+EIP to 0x00ZZYYXX, since the string ends with a null terminator. This lets
+us point to wherever we want in the stack because guess what, we're allowed
+1 NULL at the very end!<p>
+
+In some cases, this works fine. But in other cases, the buffer is either too
+small for this to work and do something useful, or the buffer is first munged
+by a bunch of string ops or parsing. In many cases, putting the code AFTER
+the return address is a better idea, as follows:<p>
+
+<pre>
+Address=.....256periods....1234wxyzOURCODEFOLLOWSHERE>>>
+</pre>
+
+In this case, you often get a lot more code space to work with for writing
+your exploit, but we don't get the added benefit of getting a free null
+character to form our stack jump address. Turns out that putting the code 
+after the return address is what we'll need to do for this exploit. The stuff
+before the return address is destroyed before we get a chance to work with it.
+We end up jumping to 0xZZYYXXWW, where neither WW,XX,YY, or ZZ can be invalid 
+chars. So where do we go? Somewhere that can take us where we want 
+to go.<p>
+
+First, turn on your realtime debugger and put in an exploit string that will
+surely cause the thing to crash. Something that points to a blatantly bad
+address (set 0xZZYYXXWW to equal 0x34333231 for example. No code is in memory there, instant page fault). Now run it and let your debugger kick in. Examine
+the state, and see what you have to work with. In the case of this exploit,
+we find that ESP is the only register that points to anything anywhere near
+our exploit code. In fact, it points to the location where we blew over the
+saved EBP, plus 16 bytes. Ok... So what exactly are we trying to do?<p>
+
+We want to jump the stack. In fact, simply jumping to ESP should be sufficient.
+A clever way to do this is to set the 0xZZYYXXWW to point to a piece of code
+in memory that does a "jmp esp" or a "call esp" or something like that. But,
+to complicate issues, it has to be in a piece of code where no byte in the
+address is a "bad byte", especially <tt>0x00</tt>. We find our magic code in
+MSCONF.DLL, loaded at 0x6A600000, offset 2A76:
+
+<pre>
+.00002A76: 54                           push   esp
+.00002A77: 2404                         and    al,004
+.00002A79: 33C0                         xor    eax,eax
+.00002A7B: 8A0A                         mov    cl,[edx]
+.00002A7D: 84C9                         test   cl,cl
+.00002A7F: 740F                         je    .000002A90   
+.00002A81: 80E930                       sub    cl,030  ;"0"
+.00002A84: 8D0480                       lea    eax,[eax][eax]*4
+.00002A87: 0FB6C9                       movzx  ecx,cl
+.00002A8A: 42                           inc    edx
+.00002A8B: 8D0441                       lea    eax,[ecx][eax]*2
+.00002A8E: EBEB                         jmps  .000002A7B
+.00002A90: C20400                       retn   00004
+</pre>
+
+This code doesn't look like it jumps to esp, but that's because it doesn't.
+It <i>returns</i> to ESP. The PUSH ESP happens, the jmps 2A7B happens once,
+then the JE 2A90 kicks in and pops us to a RET. This effectively jumps us
+to ESP. Heh. So all is well. MSCONF.DLL is loaded, and we can expect that this
+code is going to be in the same place all the time because we only have one
+version of MSCONF.DLL to worry about, and it has a fixed DLL base address.
+So our value of 0xZZYYXXWW is 0x6A602A76. No nulls, no bad chars, no bullshit.
+We have now snatched the EIP. The processor is ours. Now to do something
+useful...<p>
+
+</blockquote>
+
+<center>
+<a href="page7.html"><font size=+1>Ooh! Exploit!</font></a><p>
+<a href="page5.html"><font size=+1>Back it up, I missed something.</font></a><p>
+</center>
+
+
+</body>
+
+</html>

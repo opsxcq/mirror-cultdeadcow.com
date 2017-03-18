@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>Detection</title>
+</head>
+
+<body bgcolor=#000000 text=#FFFFFF link=#FF7F7F alink=#FFBFBF vlink=#FF3F3F>
+
+<blockquote>
+
+<font size=+3>What It Looks Like</font><p>
+
+When you see something like this,<p>
+<center>
+<img src="crash.jpg"><p>
+</center>
+you probably hit some kind of buffer overflow. Sure the error is somewhat
+generic looking, but look a little closer at some of those values...<p>
+
+To get this to happen, I fed a string of <tt>0x80</tt> bytes into a popular
+conference package called 'Microsoft Netmeeting' through the address field of
+a 'speeddial' shortcut. EIP happens to be <tt>0x80808080</tt>. Guess what? 
+That's good! I found a stack overflow! Now all I have to do is craft my 
+exploit string to have some fun code inside, and tweak four of those 
+<tt>0x80</tt> bytes to point to my exploit string.<p>
+
+Note at this point that other types of errors will bring up similar dialog
+boxes, and that not all of them are buffer overflows. Some buffer overflows
+are easier to exploit than others as well. I will be going into the mechanics
+of <b>stack overflows</b> in Windows in this paper. Other types of overflows,
+such as <b>heap overflows</b> are exploitable, on Intel Win95/98/NT, but are
+beyond the scope of this paper by about 50 IQ points from the target audience.
+<p>
+
+Once you're pretty sure that you've found a buffer overflow, you need to decide
+what approach you're going to take, and find out what tools are available to 
+you.<p>
+
+</blockquote>
+
+<center>
+<a href="page4.html"><font size=+1>Hack me up!</font></a><p>
+<a href="page2.html"><font size=+1>Back me up!</font></a><p>
+</center>
+
+
+</body>
+
+</html>
