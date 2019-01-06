@@ -11,7 +11,5 @@ docker run --rm -p 80:80 strm/mirror-cultdeadcow.com
 
 Then go to [localhost](http://localhost) and be nostalgic !
 
-![print](print.png)
-
 **Enjoy !**
 
