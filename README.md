@@ -1,5 +1,5 @@
 # CultDeadCow.com website mirror
-[![Docker Pulls](https://img.shields.io/docker/pulls/strm/mirror-acid.org.svg?style=plastic)](https://hub.docker.com/r/strm/mirror-acid.org/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/strm/mirror-cultdeadcow.com.svg?style=plastic)](https://hub.docker.com/r/strm/mirror-cultdeadcow.com/)
 
 Just a mirror of CDC's website, for old times's sake ! 
 
